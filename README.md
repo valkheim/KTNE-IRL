@@ -21,3 +21,5 @@ Les modules unipro s'identifient par Greybus
 archi fpga puis asic
 http://www.modularphonesforum.com/developers/faq/ara-communication-protocols/
 http://www.modularphonesforum.com/news/about-unipro-protocol-interface-blocks-cports-unipro-layers-vs-osi-layers-440/
+unipro protocol stack
+https://en.wikipedia.org/wiki/UniPro_protocol_stack
