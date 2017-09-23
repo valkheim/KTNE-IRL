@@ -23,3 +23,8 @@ http://www.modularphonesforum.com/developers/faq/ara-communication-protocols/
 http://www.modularphonesforum.com/news/about-unipro-protocol-interface-blocks-cports-unipro-layers-vs-osi-layers-440/
 unipro protocol stack
 https://en.wikipedia.org/wiki/UniPro_protocol_stack
+
+
+choosing the right protocol
+https://electronics.stackexchange.com/questions/37814/usart-uart-rs232-usb-spi-i2c-ttl-etc-what-are-all-of-these-and-how-do-th
+https://arduino.stackexchange.com/questions/9709/how-to-have-an-arduino-communicate-with-3-other-arduinos
