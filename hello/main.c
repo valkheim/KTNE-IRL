@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <util/delay.h>
 #include <avr/io.h>
 #define BAUD 9600
