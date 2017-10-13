@@ -18,3 +18,4 @@ set résistances
 2/3 breadboards assez grosses
 diodes
 boutons
+clefs en tous genre (genre clef de 17 pour le siege)
