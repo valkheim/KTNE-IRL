@@ -31,6 +31,25 @@ void uart_putstr(char *s)
     uart_putchar(s[i], stdout);
 }
 
+char *uart_getstr(char *dst, size_t max, FILE *stream)
+{
+  int c = 0;
+  char *p;
+
+  for (p = dst, max--; max > 0; max--)
+  {
+    if ((c = uart_getchar(stream)) == EOF)
+      break;
+    *p++ = c;
+    if (c == '\n')
+      break;
+  }
+  *p = 0;
+  if (p == dst || c == EOF)
+    return NULL;
+  return (p);
+}
+
 int uart_putchar(char c, FILE *stream)
 {
   //if (c == '\n') {

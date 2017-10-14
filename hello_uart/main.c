@@ -22,7 +22,8 @@ int main(void)
     /* Blink led by toggling state of PORTB5 (Arduino digital 13). */
     PORTB ^= _BV(PORTB5);
     memset(buf, 0, BUFSIZE);
-    while (fgets(buf, BUFSIZE, stdin))
+    //while (fgets(buf, BUFSIZE, stdin))
+    while (uart_getstr(buf, BUFSIZE, stdin))
     {
       uart_putstr(buf);
       //puts(buf);
