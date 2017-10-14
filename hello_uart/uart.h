@@ -1,5 +1,6 @@
 int uart_putchar(char c, FILE *stream);
 int uart_getchar(FILE *stream);
+void uart_putstr(char *s);
 
 void uart_init(void);
 

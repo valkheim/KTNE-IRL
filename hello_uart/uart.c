@@ -23,11 +23,19 @@ void uart_init(void)
   stdin  = &uart_input;
 }
 
+void uart_putstr(char *s)
+{
+  int i = -1;
+
+  while (s[++i])
+    uart_putchar(s[i], stdout);
+}
+
 int uart_putchar(char c, FILE *stream)
 {
-  if (c == '\n') {
-    uart_putchar('\r', stream);
-  }
+  //if (c == '\n') {
+  //  uart_putchar('\r', stream);
+  //}
   while (!(UCSR0A & (1 << UDRE0))); //loop_until_bit_is_set(UCSR0A, UDRE0);
   UDR0 = c;
   return 0;
@@ -35,10 +43,10 @@ int uart_putchar(char c, FILE *stream)
 
 int uart_getchar(FILE *stream)
 {
-  unsigned char c;
+  //unsigned char c;
 
   while (!(UCSR0A & (1 << RXC0))); //loop_until_bit_is_set(UCSR0A, RXC0);
-  c = UDR0;
-  uart_putchar(c, stream);
+  //c = UDR0;
+  //uart_putchar(c, stream);
   return UDR0;
 }

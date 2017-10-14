@@ -2,6 +2,7 @@
 #define F_CPU 16000000UL
 #endif
 
+#include <string.h>
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
@@ -20,10 +21,12 @@ int main(void)
   {
     /* Blink led by toggling state of PORTB5 (Arduino digital 13). */
     PORTB ^= _BV(PORTB5);
+    memset(buf, 0, BUFSIZE);
     while (fgets(buf, BUFSIZE, stdin))
     {
+      uart_putstr(buf);
+      //puts(buf);
       memset(buf, 0, BUFSIZE);
-      puts(buf);
     }
     _delay_ms(2000);
   }
