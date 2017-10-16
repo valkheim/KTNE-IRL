@@ -13,10 +13,10 @@ oscillateur / résonateur 16MHz pour monter l'atmega328 en standalone
 cadran timer
 
 **composants de base :**
-fils
-set résistances
-2/3 breadboards assez grosses
-diodes
-boutons
-clefs en tous genre (genre clef de 17 pour le siege)
-portes logiques
+- fils
+- set résistances
+- 2/3 breadboards assez grosses
+- diodes
+- boutons
+- clefs en tous genre (genre clef de 17 pour le siege)
+- portes logiques
