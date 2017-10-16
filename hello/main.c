@@ -16,7 +16,7 @@ static void usart_init(void)
 #else
   UCSR0A &= ~_BV(U2X0);
 #endif
-  UCSR0B = BVV(TXEN0, 1) | BVV(RXEN0, 0); /* Only TX */
+  UCSR0B = BVV(TXEN0, 1) | BVV(RXEN0, 1); /* Only TX/RX */
 }
 
 static void usart_tx(char c) // send
@@ -24,6 +24,14 @@ static void usart_tx(char c) // send
   //while(!(UCSR0A & _BV(UDRE0)));
   while(!(UCSR0A & (1 << UDRE0)));
   UDR0 = c;
+}
+
+static int usart_getchar(FILE *stream)
+{
+
+  while (!(UCSR0A & (1 << UDRE0)));
+  (void)*stream;
+  return UDR0;
 }
 
 static void usart_puts(const char *s)
@@ -34,16 +42,18 @@ static void usart_puts(const char *s)
   }
 }
 
-int main(void) {
+int main()
+{
   usart_init();
   DDRB |= (1 << LED);
-  for/*ever*/(;;) {
+  for/*ever*/(;;)
+  {
+    usart_getchar(stdin);
     PORTB |= (1 << LED);
-    usart_puts("Hello avr ");
-    _delay_ms(100);
+    _delay_ms(500);
     PORTB &= (0 << LED);
-    usart_puts("world");
-    _delay_ms(100);
+    _delay_ms(500);
+    usart_puts("ping\n");
   }
 }
 
