@@ -19,3 +19,4 @@ set résistances
 diodes
 boutons
 clefs en tous genre (genre clef de 17 pour le siege)
+portes logiques
