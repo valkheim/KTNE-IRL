@@ -28,3 +28,10 @@ https://en.wikipedia.org/wiki/UniPro_protocol_stack
 choosing the right protocol
 https://electronics.stackexchange.com/questions/37814/usart-uart-rs232-usb-spi-i2c-ttl-etc-what-are-all-of-these-and-how-do-th
 https://arduino.stackexchange.com/questions/9709/how-to-have-an-arduino-communicate-with-3-other-arduinos
+https://electronics.stackexchange.com/questions/37085/multiple-arduino-communication-1-master-n-slaves
+
+IIC w/ avr
+https://exploreembedded.com/wiki/Basics_of_I2C_with_AVR
+lib master/slave
+https://github.com/g4lvanix/I2C-slave-lib
+https://github.com/g4lvanix/I2C-master-lib
