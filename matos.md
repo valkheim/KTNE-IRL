@@ -19,6 +19,7 @@ https://www.aliexpress.com/item/10SETS-LOT-New-and-original-Arduino-UNO-R3-ATMeg
 - 11 diodes
 - 1 adaptateur usb/uart (genre https://www.ebay.com/p/Cp2102-USB-2-0-to-UART-TTL-6pin-Module-Serial-Converter-Adapter-Blue-Silver-T1/1286993754?iid=222617611551)
 - 12 leds rgb
+- 3e main
 
 **composants de base :**
 - fils
