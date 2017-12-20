@@ -1,35 +1,49 @@
-// Wire Slave Receiver
-// by Nicholas Zambetti <http://www.zambetti.com>
-
-// Demonstrates use of the Wire library
-// Receives data as an I2C/TWI slave device
-// Refer to the "Wire Master Writer" example for use with this
-
-// Created 29 March 2006
-
-// This example code is in the public domain.
-
-
 #include <Wire.h>
 
+int as[] = {8, 9, 10, 11};
+int asCount = 4;
+
+byte getI2CAddr()
+{
+  byte addr = 0;
+  
+  for (int i = 0; i < asCount; i++) {
+    pinMode(as[i], INPUT);
+    if (digitalRead(as[i]) == HIGH)
+    {/*
+      Serial.print("i : ");
+      Serial.println(i);
+      Serial.print("1 << i : ");
+      Serial.println(1 << i);*/
+      addr = addr | (1 << i);
+      /*Serial.print("addr : ");
+      Serial.println(addr);*/
+    }
+  }
+  return addr;
+}
+
+
 void setup() {
-  Wire.begin(42);                // join i2c bus with address #8
-  Wire.onReceive(receiveEvent); // register event
-  Serial.begin(9600);           // start serial for output
+  byte a = getI2CAddr();
+  
+  Wire.begin(a);
+  Wire.onReceive(receiveEvent);
+  Serial.begin(9600);
+  Serial.print("final addr : ");
+  Serial.println(a);
 }
 
 void loop() {
   delay(100);
 }
 
-// function that executes whenever data is received from master
-// this function is registered as an event, see setup()
 void receiveEvent(int howMany)
 {
-  while (1 < Wire.available()) { // loop through all but the last
-    char c = Wire.read(); // receive byte as a character
-    Serial.print(c);         // print the character
+  while (Wire.available() > 1) {
+    char c = Wire.read();
+    Serial.print(c);
   }
-  int x = Wire.read();    // receive byte as an integer
-  Serial.println(x);         // print the integer
+  int x = Wire.read();
+  Serial.println(x);
 }

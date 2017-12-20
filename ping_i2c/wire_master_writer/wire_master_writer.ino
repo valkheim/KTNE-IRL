@@ -2,19 +2,31 @@
 
 bool addresses[127] = {false};
 
+// Addresses slots
+int as[] = {8, 9, 10, 11};
+int asCount = 4;
+
+void initAddresses()
+{
+  for (int i = 0; i < asCount; i++) {
+    pinMode(as[i], OUTPUT);
+    digitalWrite(as[i], HIGH);
+  }
+}
+
 void scan()
 {
   byte error, address;
   byte n;
- 
+
   Serial.println("i2c scanner...");
- 
+
   n = 0;
   for (address = 0; address < 127; ++address)
   {
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
- 
+    
     if (error == 0)
     {
       Serial.print("I2C device found at address 0x");
@@ -64,13 +76,13 @@ void pingEveryone()
 
 void loop()
 {
-  initAddresses();
   pingEveryone();
   delay(500);
 }
 
 void setup()
 {
+  initAddresses();
   Wire.begin();
   Serial.begin(9600);
   while (!Serial); // wait for serial monitor
