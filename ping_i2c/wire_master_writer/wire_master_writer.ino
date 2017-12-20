@@ -64,6 +64,7 @@ void pingEveryone()
 
 void loop()
 {
+  initAddresses();
   pingEveryone();
   delay(500);
 }
