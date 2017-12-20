@@ -16,13 +16,13 @@ void initAddresses()
 
 void scan()
 {
-  byte error, address;
-  byte n;
+  byte n, error;
+  uint8_t address;
 
   Serial.println("i2c scanner...");
 
   n = 0;
-  for (address = 0; address < 127; ++address)
+  for (address = 0 ; address < 127 ; ++address)
   {
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
@@ -55,20 +55,35 @@ void scan()
   }
 }
 
+void transmit(int addr, byte command, byte value)
+{
+  Wire.beginTransmission(addr);
+  Wire.write(command);
+  Wire.write(value);
+  Serial.println("Sent Command:");
+  Serial.print(addr);
+  Serial.print(':');
+  Serial.print(command);
+  Serial.print(':');
+  Serial.println(value);
+  Wire.requestFrom(addr, 1);
+  while(Wire.available())
+  {
+    Serial.println("Got Response: ");
+    Serial.println((byte)Wire.read());
+  }
+  Wire.endTransmission();
+}
+
+
 void pingEveryone()
 {
   static byte x = 0;
-  for (byte i = 0 ; i < 127 ; ++i)
+  for (uint8_t i = 0 ; i < 127 ; ++i)
   {
     if (addresses[i] == true)
     {
-      Serial.print("discuss with ");
-      Serial.println(i);
-      Wire.beginTransmission(i);
-      Wire.write("x is ");
-      Wire.write(x);
-      Serial.println(x);
-      Wire.endTransmission();
+      transmit(i,x,x);
       x++;
     }
   }
@@ -85,7 +100,7 @@ void setup()
   initAddresses();
   Wire.begin();
   Serial.begin(9600);
-  while (!Serial); // wait for serial monitor
+  while (!Serial);
   scan();
 }
 

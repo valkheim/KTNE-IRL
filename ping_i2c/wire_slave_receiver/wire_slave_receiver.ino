@@ -1,49 +1,71 @@
 #include <Wire.h>
 
+// Addressing pin slots
 int as[] = {8, 9, 10, 11};
-int asCount = 4;
+// command type received
+byte command = 0;
 
-byte getI2CAddr()
+uint8_t getI2CAddr()
 {
-  byte addr = 0;
+  uint8_t addr = 0;
   
-  for (int i = 0; i < asCount; i++) {
+  for (int i = 0 ; i < sizeof(as)/sizeof(as[0]) ; ++i) {
     pinMode(as[i], INPUT);
     if (digitalRead(as[i]) == HIGH)
-    {/*
-      Serial.print("i : ");
-      Serial.println(i);
-      Serial.print("1 << i : ");
-      Serial.println(1 << i);*/
-      addr = addr | (1 << i);
-      /*Serial.print("addr : ");
-      Serial.println(addr);*/
-    }
+      addr = addr | (digitalRead(as[i]) << i);
   }
   return addr;
 }
 
-
 void setup() {
-  byte a = getI2CAddr();
-  
-  Wire.begin(a);
-  Wire.onReceive(receiveEvent);
+  Wire.begin(getI2CAddr());
   Serial.begin(9600);
-  Serial.print("final addr : ");
-  Serial.println(a);
+  Wire.onRequest(i2c_receive_request);
+  Wire.onReceive(i2c_receive_data);
 }
 
 void loop() {
   delay(100);
 }
 
-void receiveEvent(int howMany)
+void i2c_receive_data(int count)
 {
-  while (Wire.available() > 1) {
-    char c = Wire.read();
-    Serial.print(c);
+  byte input;
+  byte rxCount = 0;
+
+  Serial.println("Entering receive_data");
+  Serial.println("Got count of bytes to receive: ");
+  Serial.println(count);
+  while (Wire.available() && rxCount < count) {
+    input = (byte)Wire.read();
+    if (rxCount == 0) {
+      Serial.println("Got a command byte: ");
+      Serial.println(input);
+      command = input;
+    }
+    else {
+      Serial.println("Got value: ");
+      Serial.println(input);
+    }      
+    rxCount++;
   }
-  int x = Wire.read();
-  Serial.println(x);
+}
+
+void i2c_receive_request()
+{
+  Serial.println("Entering receive_request");
+  switch(command)
+  {
+    case 1:
+      Serial.println("Responding to command 1: 5");
+      Wire.write(5);
+      break;
+    case 2:
+      Serial.println("Responding to command 2: 6");
+      Wire.write(6);
+      break;
+    default:
+      Serial.println("Got a request without a known command.");
+      break;
+  }
 }
