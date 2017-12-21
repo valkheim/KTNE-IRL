@@ -4,11 +4,10 @@ bool addresses[127] = {false};
 
 // Addresses slots
 int as[] = {8, 9, 10, 11};
-int asCount = 4;
 
 void initAddresses()
 {
-  for (int i = 0; i < asCount; i++) {
+  for (int i = 0; i < sizeof(as) / sizeof(as[0]); i++) {
     pinMode(as[i], OUTPUT);
     digitalWrite(as[i], HIGH);
   }
