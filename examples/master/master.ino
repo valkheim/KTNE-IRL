@@ -43,7 +43,7 @@ void scan()
       if (address < 16)
         Serial.print("0");
       Serial.println(address, HEX);
-    }    
+    }
   }
   if (n == 0)
     Serial.println("No I2C devices found\n");
