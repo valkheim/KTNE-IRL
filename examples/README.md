@@ -124,6 +124,18 @@ void i2c_receive_request()
 }
 ```
 
+## Wiring
+
+Here is a wiring example :
+* Master is an arduino board rev v3 powered via usb cable
+* Slave is an arduino board rev v3 powered by master via Vin pin
+* Master set up four pins (8, 9, 10, 11) to permit addressing
+* Slave use its 4 pins to get an address (an thus gets address 1111(2) or 15(10) or 0x0F(16))
+* I2C bus is connected through SDA (Serial Data Line) and SCL (Serial Clock Line) dedicated pins (written A4 and A5 on PCB)
+
+
+![wiring](wiring.png)
+
 ## Question(s) ?
 
 Please feel free to open an [issue](https://github.com/valkheim/KTNE-IRL/issues).
