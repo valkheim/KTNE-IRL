@@ -9,11 +9,10 @@ byte value = 0;
 uint8_t getI2CAddr()
 {
   uint8_t addr = 0;
-  
-  for (int i = 0 ; i < sizeof(as)/sizeof(as[0]) ; ++i) {
+
+  for (int i = 0 ; i < sizeof(as) / sizeof(as[0]) ; ++i) {
     pinMode(as[i], INPUT);
-    if (digitalRead(as[i]) == HIGH)
-      addr = addr | (digitalRead(as[i]) << i);
+    addr = addr | (digitalRead(as[i]) << i);
   }
   return addr;
 }
