@@ -2,9 +2,13 @@
 
 // Addressing pin slots
 int as[] = {8, 9, 10, 11};
+
+uint16_t timeleft = 300;
+uint16_t difficulty = 1;
+
 // command type received
 byte command = 0;
-byte value = 0;
+uint16_t value = 0;
 
 uint8_t getI2CAddr()
 {
@@ -31,28 +35,49 @@ void i2c_receive_data(int count)
 {
   byte input;
   byte rxCount = 0;
-
-  while (Wire.available() && rxCount < count) {
+  
+  value = 0;
+  while (Wire.available() && rxCount <= count) {
     input = (byte)Wire.read();
     if (rxCount == 0) {
       command = input;
     }
     else {
-      value = input;
-    }      
+      if (rxCount == 1)
+        value = input;
+      else
+        value = value | (input << 8);
+    }
     rxCount++;
   }
+}
+
+void answer(uint16_t i)
+{
+  Wire.write(i);
+  Wire.write(i >> 8);  
 }
 
 void i2c_receive_request()
 {
   switch(command)
   {
-    case 1:
-      Wire.write(1);
+    case 0: // Update timeleft
+      timeleft = value;
+      answer(1);
       break;
-    case 2:
-      Wire.write(2);
+    case 1: // Defused ?
+      if (timeleft < 150)
+        answer(1);
+      else
+        answer(0);
+      break;
+    case 2: // Difficulty
+      difficulty = value;
+      answer(1);
+      break;
+    case 3: // User made mistake ? penalty in seconds
+      answer(10);
       break;
     default:
       break;
