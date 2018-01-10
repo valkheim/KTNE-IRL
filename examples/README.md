@@ -74,7 +74,7 @@ void loop()
 For each transmission, master holds until it receive an answer.
 Slave(s) is(are) responding to those transmissions by using `Wire.onRequest(i2c_receive_request);` and `Wire.onReceive(i2c_receive_data);`
 
-The function `i2c_receive_data` is called when the slave receive a transmission from the master. It is used to remember the command type on a global `byte command = 0;` variable. It also debug value which is not necessary in the project.
+The function `i2c_receive_data` is called when the slave receive a transmission from the master. It is used to remember the command type on a global `byte command = 0;` variable. It also retrieves value that may be useful for some commands.
 
 ```
 void i2c_receive_data(int count)
@@ -82,19 +82,13 @@ void i2c_receive_data(int count)
   byte input;
   byte rxCount = 0;
 
-  Serial.println("Entering receive_data");
-  Serial.println("Got count of bytes to receive: ");
-  Serial.println(count);
   while (Wire.available() && rxCount < count) {
     input = (byte)Wire.read();
     if (rxCount == 0) {
-      Serial.println("Got a command byte: ");
-      Serial.println(input);
       command = input;
     }
     else {
-      Serial.println("Got value: ");
-      Serial.println(input);
+      value = input;
     }      
     rxCount++;
   }
@@ -106,19 +100,15 @@ The function `i2c_receive_request` is called when the master needs an answer fro
 ```
 void i2c_receive_request()
 {
-  Serial.println("Entering receive_request");
   switch(command)
   {
     case 1:
-      Serial.println("Responding to command 1: 5");
-      Wire.write(5);
+      Wire.write(1);
       break;
     case 2:
-      Serial.println("Responding to command 2: 6");
-      Wire.write(6);
+      Wire.write(2);
       break;
     default:
-      Serial.println("Got a request without a known command.");
       break;
   }
 }
