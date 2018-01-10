@@ -40,7 +40,6 @@ This table describes the answers of the slaves :
 | 1       | 1            | Yes                           |
 | 1       | 0            | No                            |
 | 2       | 1            | Ok                            |
-| 2       | 0            | Ko                            |
 | 3       | penality (s) | User potentially made mistake |
 
 ## Running the tests
