@@ -59,6 +59,8 @@ void transmit(int addr, byte command, byte value)
   Wire.beginTransmission(addr);
   Wire.write(command);
   Wire.write(value);
+  Wire.endTransmission();
+  delay(1);
   Serial.println("Sent Command:");
   Serial.print(addr);
   Serial.print(':');
@@ -71,7 +73,6 @@ void transmit(int addr, byte command, byte value)
     Serial.println("Got Response: ");
     Serial.println((byte)Wire.read());
   }
-  Wire.endTransmission();
 }
 
 
@@ -99,7 +100,7 @@ void setup()
   initAddresses();
   Wire.begin();
   Serial.begin(9600);
-  while (!Serial);
+  //while (!Serial);
   scan();
 }
 

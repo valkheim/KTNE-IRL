@@ -4,6 +4,7 @@
 int as[] = {8, 9, 10, 11};
 // command type received
 byte command = 0;
+byte value = 0;
 
 uint8_t getI2CAddr()
 {
@@ -19,13 +20,12 @@ uint8_t getI2CAddr()
 
 void setup() {
   Wire.begin(getI2CAddr());
-  Serial.begin(9600);
   Wire.onRequest(i2c_receive_request);
   Wire.onReceive(i2c_receive_data);
 }
 
 void loop() {
-  delay(100);
+
 }
 
 void i2c_receive_data(int count)
@@ -33,19 +33,13 @@ void i2c_receive_data(int count)
   byte input;
   byte rxCount = 0;
 
-  Serial.println("Entering receive_data");
-  Serial.println("Got count of bytes to receive: ");
-  Serial.println(count);
   while (Wire.available() && rxCount < count) {
     input = (byte)Wire.read();
     if (rxCount == 0) {
-      Serial.println("Got a command byte: ");
-      Serial.println(input);
       command = input;
     }
     else {
-      Serial.println("Got value: ");
-      Serial.println(input);
+      value = input;
     }      
     rxCount++;
   }
@@ -53,19 +47,15 @@ void i2c_receive_data(int count)
 
 void i2c_receive_request()
 {
-  Serial.println("Entering receive_request");
   switch(command)
   {
     case 1:
-      Serial.println("Responding to command 1: 5");
-      Wire.write(5);
+      Wire.write(1);
       break;
     case 2:
-      Serial.println("Responding to command 2: 6");
-      Wire.write(6);
+      Wire.write(2);
       break;
     default:
-      Serial.println("Got a request without a known command.");
       break;
   }
 }
