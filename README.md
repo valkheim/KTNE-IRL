@@ -24,17 +24,24 @@ Slaves can only respond to the master questions. Thus, a command number refers t
 
 This table describes the questions asked by the master :
 
-| Command | Question    |
-| :-----: | :---------: |
-| 1       | Defused ?   |
+| Command | Parameter    | Meaning              |
+| :-----: | :----------: | :------------------: |
+| 0       | timeleft (s) | Update timeleft      |
+| 1       |              | Defused ?            |
+| 2       | level [1;3]  | Update difficulty    |
+| 3       |              | User made misktake ? |
 
 
 This table describes the answers of the slaves :
 
-| Command | Value | Answer |
-| :-----: | :---: | :----: |
-| 1       | 1     | Yes    |
-| 1       | 0     | No     |
+| Command | Value        | Answer                        |
+| :-----: | :----------: | :---------------------------: |
+| 0       | 1            | Ok                            |
+| 1       | 1            | Yes                           |
+| 1       | 0            | No                            |
+| 2       | 1            | Ok                            |
+| 2       | 0            | Ko                            |
+| 3       | penality (s) | User potentially made mistake |
 
 ## Running the tests
 
