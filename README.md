@@ -19,7 +19,7 @@ You will find those two under [examples](examples/).
 
 ## Protocol
 
-Master and slaves are communication using the following protocol which consists of a command type and a value that fit one byte.
+Master and slaves are communicating using the following protocol which consists of a command type and a value that fit one byte.
 Slaves can only respond to the master questions. Thus, a command number refers to a question and an answer.
 
 This table describes the questions asked by the master :
@@ -56,4 +56,10 @@ See also the list of [contributors](https://github.com/valkheim/KTNE-IRL/contrib
 
 ## License
 
-This project is licensed under the GPL v3 License - see the [LICENSE.md](LICENSE) file for details
+Copyright (C) 2017-2018 Charles Paulet
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+See the [LICENSE.md](LICENSE) file for details
