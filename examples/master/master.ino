@@ -2,7 +2,7 @@
 
 bool addresses[127] = {false};
 
-// Addresses slots
+// Addresses pins
 int as[] = {8, 9, 10, 11};
 
 uint16_t timeleft = 300; // 5 minutes
@@ -21,8 +21,6 @@ void scan()
   byte n, error;
   uint8_t address;
 
-  Serial.println("i2c scanner...");
-
   n = 0;
   for (address = 0 ; address < 127 ; ++address)
   {
@@ -34,8 +32,7 @@ void scan()
       Serial.print("I2C device found at address 0x");
       if (address < 16)
         Serial.print("0");
-      Serial.print(address, HEX);
-      Serial.println(" !");
+      Serial.println(address, HEX);
       n++;
       addresses[address] = true;
     }
@@ -70,13 +67,10 @@ byte transmit(int addr, byte command, uint16_t value)
   Wire.requestFrom(addr, 1);
   while(Wire.available())
   {
-    Serial.println("Got Response: ");
     res = (byte)Wire.read();
-    Serial.println(res);
   }
   return res;
 }
-
 
 void pingEveryone()
 {
@@ -92,17 +86,22 @@ void pingEveryone()
   }
 }
 
-void analyse(int command, int addr, byte res)
+void printHeader(int command, int addr, byte res)
 {
   Serial.print("=== command : ");
-    Serial.print(command);
- Serial.print(" - addr : ");
-    Serial.print(addr);
- Serial.print(" - res : ");
-    Serial.print(res);
- Serial.print(" - timeleft : ");
-    Serial.print(timeleft);    
-     Serial.println(" ===");
+  Serial.print(command);
+  Serial.print(" | addr : ");
+  Serial.print(addr);
+  Serial.print(" | response : ");
+  Serial.print(res);
+  Serial.print(" | timeleft : ");
+  Serial.print(timeleft);    
+  Serial.println(" ==="); 
+}
+
+void analyse(int command, int addr, byte res)
+{
+  printHeader(command, addr, res);
   switch (command)
   {
     case 0: // update timeleft
@@ -132,7 +131,6 @@ void loop()
   pingEveryone();
   delay(1000);
   timeleft--;
-//   Serial.print("tick");
 }
 
 void setup()
