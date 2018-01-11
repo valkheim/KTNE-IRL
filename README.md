@@ -44,7 +44,7 @@ This table describes the answers of the slaves :
 
 ## Running the tests
 
-You can debug modules using serial communication. 
+You can debug modules using serial communication.
 
 ## Built With
 
@@ -57,6 +57,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 ## Authors
 
 * **Charles Paulet** - *Initial work* - [Github](https://github.com/valkheim)
+* **Théophile Champion** - *Helper* - [Github](https://github.com/ChampiB)
 
 See also the list of [contributors](https://github.com/valkheim/KTNE-IRL/contributors) who participated in this project.
 

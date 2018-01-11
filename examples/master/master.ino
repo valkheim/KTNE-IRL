@@ -6,15 +6,13 @@ bool addresses[127] = {false};
 int as[] = {8, 9, 10, 11};
 
 uint16_t timeleft = 300; // 5 minutes
-uint16_t difficulty = 1;
+uint16_t difficulty = 1; // easy
 
-void initAddresses()
-{
-  for (int i = 0; i < sizeof(as) / sizeof(as[0]); i++) {
-    pinMode(as[i], OUTPUT);
-    digitalWrite(as[i], HIGH);
-  }
-}
+bool defused = false;
+
+#define RED_LED (2)
+#define GREEN_LED (3)
+#define YELLOW_LED (4)
 
 void scan()
 {
@@ -29,21 +27,25 @@ void scan()
     
     if (error == 0)
     {
+      /*
       Serial.print("I2C device found at address 0x");
       if (address < 16)
         Serial.print("0");
-      Serial.println(address, HEX);
+      Serial.println(address, HEX);*/
       n++;
       addresses[address] = true;
     }
     else if (error == 4)
     {
+      /*
       Serial.print("Unknown error at address 0x");
       if (address < 16)
         Serial.print("0");
       Serial.println(address, HEX);
+      */
     }
   }
+  /*
   if (n == 0)
     Serial.println("No I2C devices found\n");
   else
@@ -52,6 +54,7 @@ void scan()
     Serial.print(n);
     Serial.println(" device(s).");
   }
+  */
 }
 
 byte transmit(int addr, byte command, uint16_t value)
@@ -96,12 +99,12 @@ void printHeader(int command, int addr, byte res)
   Serial.print(res);
   Serial.print(" | timeleft : ");
   Serial.print(timeleft);    
-  Serial.println(" ==="); 
+  Serial.println(" ===");
 }
 
 void analyse(int command, int addr, byte res)
 {
-  printHeader(command, addr, res);
+  //printHeader(command, addr, res);
   switch (command)
   {
     case 0: // update timeleft
@@ -109,36 +112,79 @@ void analyse(int command, int addr, byte res)
     case 1: // defused ?
       if (res == 1)
       {
-        Serial.print("defused : ");
-        Serial.println(addr);
+        //Serial.print("defused : ");
+        //Serial.println(addr);
         addresses[addr] = false;
       }
       break;
     case 2: // difficulty
       break;
     case 3: // user made mistake ?
-      Serial.print("penality : ");
-      Serial.println(res);
-      timeleft = timeleft - res;
+      //Serial.print("penality : ");
+      //Serial.println(res);
+      if (timeleft < res)
+        timeleft = 0;
+      else
+        timeleft = timeleft - res;
       break;
     default:
       break;
   }
 }
 
+bool areAllDefused()
+{
+  for (uint8_t i = 0 ; i < 127 ; ++i)
+  {
+    if (addresses[i] == true)
+      return false;
+  }
+  return true;
+}
+
+void updateLed()
+{
+  if (defused == false)
+  {
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(GREEN_LED, LOW);
+  }
+  else
+  {
+    digitalWrite(RED_LED, LOW);
+    digitalWrite(GREEN_LED, HIGH);
+  }
+}
+
+void play()
+{
+  if (defused == false)
+  {
+    pingEveryone();
+    if (timeleft != 0)
+      timeleft--;
+    defused = areAllDefused();
+  }
+  updateLed();
+}
+
 void loop()
 {
-  pingEveryone();
+  if (timeleft == 0)
+    digitalWrite(YELLOW_LED, HIGH); // Boouum !!
+  else
+    play();
   delay(1000);
-  timeleft--;
 }
 
 void setup()
 {
-  initAddresses();
+  pinMode(RED_LED, OUTPUT);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
   Wire.begin();
-  Serial.begin(9600);
-  while (!Serial);
+  //Serial.begin(9600);
+  //while (!Serial);
   scan();
 }
 
