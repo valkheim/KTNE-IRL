@@ -37,7 +37,7 @@ void i2c_receive_data(int count)
 {
   byte input;
   byte rxCount = 0;
-  
+
   value = 0;
   while (Wire.available() && rxCount <= count) {
     input = (byte)Wire.read();

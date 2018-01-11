@@ -24,7 +24,7 @@ void scan()
   {
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
-    
+
     if (error == 0)
     {
       /*
@@ -187,4 +187,3 @@ void setup()
   //while (!Serial);
   scan();
 }
-
