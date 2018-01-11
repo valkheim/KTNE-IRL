@@ -49,14 +49,13 @@ void loop() {
     digitalWrite(VIN_GREEN_LED, LOW);
     digitalWrite(VIN_RED_LED, HIGH);
   }
-  
 }
 
 void i2c_receive_data(int count)
 {
   byte input;
   byte rxCount = 0;
-  
+
   value = 0;
   while (Wire.available() && rxCount <= count) {
     input = (byte)Wire.read();

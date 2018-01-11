@@ -26,7 +26,7 @@ void scan()
   {
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
-    
+
     if (error == 0)
     {
       Serial.print("I2C device found at address 0x");
@@ -141,4 +141,3 @@ void setup()
   while (!Serial);
   scan();
 }
-
