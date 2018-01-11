@@ -24,28 +24,24 @@ void scan()
   {
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
-
+    
     if (error == 0)
     {
-      /*
       Serial.print("I2C device found at address 0x");
       if (address < 16)
         Serial.print("0");
-      Serial.println(address, HEX);*/
+      Serial.println(address, HEX);
       n++;
       addresses[address] = true;
     }
     else if (error == 4)
     {
-      /*
       Serial.print("Unknown error at address 0x");
       if (address < 16)
         Serial.print("0");
       Serial.println(address, HEX);
-      */
     }
   }
-  /*
   if (n == 0)
     Serial.println("No I2C devices found\n");
   else
@@ -54,7 +50,6 @@ void scan()
     Serial.print(n);
     Serial.println(" device(s).");
   }
-  */
 }
 
 byte transmit(int addr, byte command, uint16_t value)
@@ -104,7 +99,7 @@ void printHeader(int command, int addr, byte res)
 
 void analyse(int command, int addr, byte res)
 {
-  //printHeader(command, addr, res);
+  printHeader(command, addr, res);
   switch (command)
   {
     case 0: // update timeleft
@@ -112,16 +107,16 @@ void analyse(int command, int addr, byte res)
     case 1: // defused ?
       if (res == 1)
       {
-        //Serial.print("defused : ");
-        //Serial.println(addr);
+        Serial.print("defused : ");
+        Serial.println(addr);
         addresses[addr] = false;
       }
       break;
     case 2: // difficulty
       break;
     case 3: // user made mistake ?
-      //Serial.print("penality : ");
-      //Serial.println(res);
+      Serial.print("penality : ");
+      Serial.println(res);
       if (timeleft < res)
         timeleft = 0;
       else
@@ -161,7 +156,7 @@ void play()
   if (defused == false)
   {
     pingEveryone();
-    if (timeleft != 0)
+    if (timeleft > 0)
       timeleft--;
     defused = areAllDefused();
   }
@@ -171,7 +166,7 @@ void play()
 void loop()
 {
   if (timeleft == 0)
-    digitalWrite(YELLOW_LED, HIGH); // Boouum !!
+    digitalWrite(YELLOW_LED, HIGH); // Handle the bombe explosion
   else
     play();
   delay(1000);
@@ -183,7 +178,8 @@ void setup()
   pinMode(GREEN_LED, OUTPUT);
   pinMode(YELLOW_LED, OUTPUT);
   Wire.begin();
-  //Serial.begin(9600);
-  //while (!Serial);
+  Serial.begin(9600);
+  while (!Serial);
   scan();
 }
+
