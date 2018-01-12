@@ -2,46 +2,58 @@
 
 bool addresses[127] = {false};
 
-// Addresses pins
-int as[] = {8, 9, 10, 11};
+uint16_t timeleft = 300;   // 5 minutes
+uint16_t difficulty = 1;   // Easy
 
-uint16_t timeleft = 300; // 5 minutes
-uint16_t difficulty = 1; // easy
+bool defused = false;      // Is the bombe defused ?
 
-bool defused = false;
+// Message's structure
+struct BusMessage
+{
+  uint16_t data[2];
+};
 
+// Output
 #define RED_LED (2)
 #define GREEN_LED (3)
 #define YELLOW_LED (4)
 
-void scan()
-{
-  byte n, error;
-  uint8_t address;
+// Input
+#define SENSE_PIN (0)
 
-  n = 0;
-  for (address = 0 ; address < 127 ; ++address)
-  {
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
-    
-    if (error == 0)
-    {
-      Serial.print("I2C device found at address 0x");
-      if (address < 16)
-        Serial.print("0");
-      Serial.println(address, HEX);
-      n++;
-      addresses[address] = true;
-    }
-    else if (error == 4)
-    {
-      Serial.print("Unknown error at address 0x");
-      if (address < 16)
-        Serial.print("0");
-      Serial.println(address, HEX);
-    }
-  }
+// Command
+# define TIME_CMD (0)
+# define DIFFICULTY_CMD (1)
+# define NEED_TO_SPEAK_CMD (2)
+# define INFO_CMD (3)
+
+# define DEFUSED_CMD (4)
+# define PENALITY_CMD (5)
+# define END_CMD (6)
+
+// Answer
+# define ANSWER_YES (1)
+# define ANSWER_NO (0)
+# define ANSWER_OK (1)
+
+void printDeviceFound(uint8_t address)
+{
+  Serial.print("I2C device found at address 0x");
+  if (address < 16)
+    Serial.print("0");
+  Serial.println(address, HEX);
+}
+
+void printUnknownError(uint8_t address)
+{
+  Serial.print("Unknown error at address 0x");
+  if (address < 16)
+    Serial.print("0");
+  Serial.println(address, HEX);
+}
+
+void printNumberOfDeviceFound(byte n)
+{
   if (n == 0)
     Serial.println("No I2C devices found\n");
   else
@@ -49,38 +61,6 @@ void scan()
     Serial.print("Found ");
     Serial.print(n);
     Serial.println(" device(s).");
-  }
-}
-
-byte transmit(int addr, byte command, uint16_t value)
-{
-  byte res = 0;
-
-  Wire.beginTransmission(addr);
-  Wire.write(command);
-  Wire.write(value);
-  Wire.write(value >> 8);
-  Wire.endTransmission();
-  delay(1);
-  Wire.requestFrom(addr, 1);
-  while(Wire.available())
-  {
-    res = (byte)Wire.read();
-  }
-  return res;
-}
-
-void pingEveryone()
-{
-  for (uint8_t i = 0 ; i < 127 ; ++i)
-  {
-    if (addresses[i] == true)
-    {
-      analyse(0, i, transmit(i, 0, timeleft)); // update timeleft
-      analyse(1, i, transmit(i, 1, 0)); // defused ?
-      analyse(2, i, transmit(i, 2, difficulty)); // difficulty
-      analyse(3, i, transmit(i, 3, 0)); // user made mistake ?
-    }
   }
 }
 
@@ -97,33 +77,144 @@ void printHeader(int command, int addr, byte res)
   Serial.println(" ===");
 }
 
-void analyse(int command, int addr, byte res)
+void writeUint16(uint16_t i)
 {
-  printHeader(command, addr, res);
-  switch (command)
+  Wire.write(i);
+  Wire.write(i >> 8);
+}
+
+BusMessage sendTo(int addr, uint16_t command, uint16_t parameter)
+{
+  Wire.beginTransmission(addr);
+  writeUint16(command);
+  writeUint16(parameter);
+  Wire.endTransmission();
+  delay(1);
+  return receiveFrom(addr);
+}
+
+BusMessage sendTime(int addr)
+{
+  return sendTo(addr, TIME_CMD, timeleft);
+}
+
+BusMessage sendDifficulty(int addr)
+{
+  return sendTo(addr, DIFFICULTY_CMD, difficulty);
+}
+
+BusMessage sendNeedToSpeak(int addr)
+{
+  return sendTo(addr, NEED_TO_SPEAK_CMD, 0);
+}
+
+BusMessage sendInfo(int addr)
+{
+  return sendTo(addr, INFO_CMD, 0);
+}
+
+void addSlave(uint8_t address)
+{
+  addresses[address] = true;
+  sendDifficulty(address);
+  sendTime(address);
+}
+
+void scan()
+{
+  byte n, error;
+  uint8_t address;
+
+  n = 0;
+  for (address = 0 ; address < 127 ; ++address)
   {
-    case 0: // update timeleft
-      break;
-    case 1: // defused ?
-      if (res == 1)
-      {
-        Serial.print("defused : ");
-        Serial.println(addr);
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+    
+    if (error == 0)
+    {
+      printDeviceFound(address);
+      n++;
+      addSlave(address);
+    }
+    else if (error == 4)
+      printUnknownError(address);
+  }
+  printNumberOfDeviceFound(n);
+}
+
+BusMessage receiveFrom(int addr)
+{
+  BusMessage res = { 0 };
+  byte tmp = 0;
+  int i = 0;
+
+  Wire.requestFrom(addr, 4);
+  while(Wire.available())
+  {
+    tmp = (byte)Wire.read();
+    res.data[i / 2] = res.data[i / 2] | ( tmp << 8 * (i % 2));
+    i++;
+  }
+  return res;
+}
+
+bool someoneNeedToSpeak()
+{
+  Serial.println(analogRead(SENSE_PIN));
+  return analogRead(SENSE_PIN);
+}
+
+void decreaseTimeLeft(uint16_t nb_sec)
+{
+  if (timeleft < nb_sec)
+    timeleft = 0;
+  else
+    timeleft = timeleft - nb_sec;
+}
+
+void handleNeedToSpeakCommand(int addr, BusMessage answer)
+{
+  BusMessage res = { 0 };
+
+  if (answer.data[0] != ANSWER_YES)
+    return;
+  do
+  {
+    Serial.println("addr :");
+    Serial.println(addr);
+    res = sendInfo(addr);
+    switch (res.data[0])
+    {
+      case DEFUSED_CMD:
+        Serial.println("DEFUSED_CMD");
         addresses[addr] = false;
+        break;
+      case PENALITY_CMD:
+        Serial.println("PENALITY_CMD");
+        decreaseTimeLeft(res.data[1]);
+        break;
+      default:
+        break;
+    }
+  } while (res.data[0] != END_CMD);
+}
+
+void pingEveryone()
+{
+  for (uint8_t i = 0 ; i < 127 ; ++i)
+  {
+    if (addresses[i] == true)
+    {
+      Serial.print("addr : ");
+      Serial.println(i);
+      sendTime(i);
+      if (someoneNeedToSpeak() == true)
+      {
+        Serial.println("someoneNeedToSpeak");
+        handleNeedToSpeakCommand(i, sendNeedToSpeak(i));
       }
-      break;
-    case 2: // difficulty
-      break;
-    case 3: // user made mistake ?
-      Serial.print("penality : ");
-      Serial.println(res);
-      if (timeleft < res)
-        timeleft = 0;
-      else
-        timeleft = timeleft - res;
-      break;
-    default:
-      break;
+    }
   }
 }
 
@@ -151,29 +242,34 @@ void updateLed()
   }
 }
 
-void play()
+void HandlePlay()
 {
   if (defused == false)
   {
     pingEveryone();
-    if (timeleft > 0)
-      timeleft--;
+    decreaseTimeLeft(1);
     defused = areAllDefused();
   }
   updateLed();
 }
 
+void HandleBombeExplosion()
+{
+  digitalWrite(YELLOW_LED, HIGH);
+}
+
 void loop()
 {
   if (timeleft == 0)
-    digitalWrite(YELLOW_LED, HIGH); // Handle the bombe explosion
+    HandleBombeExplosion();
   else
-    play();
+    HandlePlay();
   delay(1000);
 }
 
 void setup()
 {
+  pinMode(SENSE_PIN, INPUT);
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
   pinMode(YELLOW_LED, OUTPUT);
@@ -182,4 +278,3 @@ void setup()
   while (!Serial);
   scan();
 }
-
