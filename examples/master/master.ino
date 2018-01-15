@@ -19,7 +19,7 @@ struct BusMessage
 #define YELLOW_LED (4)
 
 // Input
-#define SENSE_PIN (0)
+#define SENSE_PIN (7)
 
 // Command
 # define TIME_CMD (0)
@@ -64,7 +64,7 @@ void printNumberOfDeviceFound(byte n)
   }
 }
 
-void printHeader(int command, int addr, byte res)
+void printHeader(int command, uint8_t addr, byte res)
 {
   Serial.print("=== command : ");
   Serial.print(command);
@@ -83,7 +83,7 @@ void writeUint16(uint16_t i)
   Wire.write(i >> 8);
 }
 
-BusMessage sendTo(int addr, uint16_t command, uint16_t parameter)
+BusMessage request(uint8_t addr, uint16_t command, uint16_t parameter)
 {
   Wire.beginTransmission(addr);
   writeUint16(command);
@@ -93,31 +93,31 @@ BusMessage sendTo(int addr, uint16_t command, uint16_t parameter)
   return receiveFrom(addr);
 }
 
-BusMessage sendTime(int addr)
+BusMessage requestTime(uint8_t addr)
 {
-  return sendTo(addr, TIME_CMD, timeleft);
+  return request(addr, TIME_CMD, timeleft);
 }
 
-BusMessage sendDifficulty(int addr)
+BusMessage requestDifficulty(uint8_t addr)
 {
-  return sendTo(addr, DIFFICULTY_CMD, difficulty);
+  return request(addr, DIFFICULTY_CMD, difficulty);
 }
 
-BusMessage sendNeedToSpeak(int addr)
+BusMessage requestNeedToSpeak(uint8_t addr)
 {
-  return sendTo(addr, NEED_TO_SPEAK_CMD, 0);
+  return request(addr, NEED_TO_SPEAK_CMD, 0);
 }
 
-BusMessage sendInfo(int addr)
+BusMessage requestInfo(uint8_t addr)
 {
-  return sendTo(addr, INFO_CMD, 0);
+  return request(addr, INFO_CMD, 0);
 }
 
-void addSlave(uint8_t address)
+void registerSlave(uint8_t address)
 {
   addresses[address] = true;
-  sendDifficulty(address);
-  sendTime(address);
+  requestDifficulty(address);
+  requestTime(address);
 }
 
 void scan()
@@ -130,12 +130,11 @@ void scan()
   {
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
-    
     if (error == 0)
     {
       printDeviceFound(address);
       n++;
-      addSlave(address);
+      registerSlave(address);
     }
     else if (error == 4)
       printUnknownError(address);
@@ -143,7 +142,7 @@ void scan()
   printNumberOfDeviceFound(n);
 }
 
-BusMessage receiveFrom(int addr)
+BusMessage receiveFrom(uint8_t addr)
 {
   BusMessage res = { 0 };
   byte tmp = 0;
@@ -153,7 +152,7 @@ BusMessage receiveFrom(int addr)
   while(Wire.available())
   {
     tmp = (byte)Wire.read();
-    res.data[i / 2] = res.data[i / 2] | ( tmp << 8 * (i % 2));
+    res.data[i / 2] = res.data[i / 2] | (tmp << 8 * (i % 2));
     i++;
   }
   return res;
@@ -161,8 +160,7 @@ BusMessage receiveFrom(int addr)
 
 bool someoneNeedToSpeak()
 {
-  Serial.println(analogRead(SENSE_PIN));
-  return analogRead(SENSE_PIN);
+  return digitalRead(SENSE_PIN);
 }
 
 void decreaseTimeLeft(uint16_t nb_sec)
@@ -173,7 +171,7 @@ void decreaseTimeLeft(uint16_t nb_sec)
     timeleft = timeleft - nb_sec;
 }
 
-void handleNeedToSpeakCommand(int addr, BusMessage answer)
+void handleNeedToSpeakCommand(uint8_t addr, BusMessage answer)
 {
   BusMessage res = { 0 };
 
@@ -183,7 +181,7 @@ void handleNeedToSpeakCommand(int addr, BusMessage answer)
   {
     Serial.println("addr :");
     Serial.println(addr);
-    res = sendInfo(addr);
+    res = requestInfo(addr);
     switch (res.data[0])
     {
       case DEFUSED_CMD:
@@ -208,11 +206,11 @@ void pingEveryone()
     {
       Serial.print("addr : ");
       Serial.println(i);
-      sendTime(i);
+      requestTime(i);
       if (someoneNeedToSpeak() == true)
       {
         Serial.println("someoneNeedToSpeak");
-        handleNeedToSpeakCommand(i, sendNeedToSpeak(i));
+        handleNeedToSpeakCommand(i, requestNeedToSpeak(i));
       }
     }
   }
@@ -228,7 +226,7 @@ bool areAllDefused()
   return true;
 }
 
-void updateLed()
+void updateModuleStatus()
 {
   if (defused == false)
   {
@@ -250,7 +248,7 @@ void HandlePlay()
     decreaseTimeLeft(1);
     defused = areAllDefused();
   }
-  updateLed();
+  updateModuleStatus();
 }
 
 void HandleBombeExplosion()

@@ -118,7 +118,7 @@ void i2c_receive_request()
   }
 }
 
-void updateLed()
+void updateModuleStatus()
 {
   if (defused == false)
   {
@@ -132,7 +132,7 @@ void updateLed()
   }
 }
 
-void setModuleAsDefused()
+void defuseModule()
 {
   digitalWrite(SENSE_PIN, HIGH);
   masterNeedsDefusingInformation = true;
@@ -142,8 +142,8 @@ void setModuleAsDefused()
 void loop()
 {
   if (digitalRead(BUTTON) == HIGH)
-    setModuleAsDefused();
-  updateLed();
+    defuseModule();
+  updateModuleStatus();
 }
 
 void setup()
