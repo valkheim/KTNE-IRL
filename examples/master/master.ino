@@ -22,14 +22,14 @@ struct BusMessage
 #define SENSE_PIN (7)
 
 // Command
-# define TIME_CMD (0)
-# define DIFFICULTY_CMD (1)
-# define NEED_TO_SPEAK_CMD (2)
-# define INFO_CMD (3)
+# define CMD_TIME (0)
+# define CMD_DIFFICULTY (1)
+# define CMD_NEED_TO_SPEAK (2)
+# define CMD_INFO (3)
 
-# define DEFUSED_CMD (4)
-# define PENALITY_CMD (5)
-# define END_CMD (6)
+# define CMD_DEFUSED (4)
+# define CMD_PENALITY (5)
+# define CMD_END (6)
 
 // Answer
 # define ANSWER_YES (1)
@@ -95,22 +95,22 @@ BusMessage request(uint8_t addr, uint16_t command, uint16_t parameter)
 
 BusMessage requestTime(uint8_t addr)
 {
-  return request(addr, TIME_CMD, timeleft);
+  return request(addr, CMD_TIME, timeleft);
 }
 
 BusMessage requestDifficulty(uint8_t addr)
 {
-  return request(addr, DIFFICULTY_CMD, difficulty);
+  return request(addr, CMD_DIFFICULTY, difficulty);
 }
 
 BusMessage requestNeedToSpeak(uint8_t addr)
 {
-  return request(addr, NEED_TO_SPEAK_CMD, 0);
+  return request(addr, CMD_NEED_TO_SPEAK, 0);
 }
 
 BusMessage requestInfo(uint8_t addr)
 {
-  return request(addr, INFO_CMD, 0);
+  return request(addr, CMD_INFO, 0);
 }
 
 void registerSlave(uint8_t address)
@@ -184,18 +184,18 @@ void handleNeedToSpeakCommand(uint8_t addr, BusMessage answer)
     res = requestInfo(addr);
     switch (res.data[0])
     {
-      case DEFUSED_CMD:
-        Serial.println("DEFUSED_CMD");
+      case CMD_DEFUSED:
+        Serial.println("CMD_DEFUSED");
         addresses[addr] = false;
         break;
-      case PENALITY_CMD:
-        Serial.println("PENALITY_CMD");
+      case CMD_PENALITY:
+        Serial.println("CMD_PENALITY");
         decreaseTimeLeft(res.data[1]);
         break;
       default:
         break;
     }
-  } while (res.data[0] != END_CMD);
+  } while (res.data[0] != CMD_END);
 }
 
 void pingEveryone()

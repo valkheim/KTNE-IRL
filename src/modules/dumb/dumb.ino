@@ -22,14 +22,14 @@ uint16_t parameter = 0; // Last command's parameter sent by master
 #define BUTTON (4)
 
 // Command
-# define TIME_CMD (0)
-# define DIFFICULTY_CMD (1)
-# define NEED_TO_SPEAK_CMD (2)
-# define INFO_CMD (3)
+# define CMD_TIME (0)
+# define CMD_DIFFICULTY (1)
+# define CMD_NEED_TO_SPEAK (2)
+# define CMD_INFO (3)
 
-# define DEFUSED_CMD (4)
-# define PENALITY_CMD (5)
-# define END_CMD (6)
+# define CMD_DEFUSED (4)
+# define CMD_PENALITY (5)
+# define CMD_END (6)
 
 // Answer
 # define ANSWER_YES (1)
@@ -84,33 +84,33 @@ void i2c_receive_request()
 {
   switch(command)
   {
-    case TIME_CMD:
+    case CMD_TIME:
       timeleft = parameter;
       answer(ANSWER_OK, 0);
       break;
-    case DIFFICULTY_CMD:
+    case CMD_DIFFICULTY:
       difficulty = parameter;
       answer(ANSWER_OK, 0);
       break;
-    case NEED_TO_SPEAK_CMD:
+    case CMD_NEED_TO_SPEAK:
       if (needToSpeak())
         answer(ANSWER_YES, 0);
       else
         answer(ANSWER_NO, 0);
       break;
-    case INFO_CMD:
+    case CMD_INFO:
       if (penality != 0) {
-        answer(PENALITY_CMD, penality);
+        answer(CMD_PENALITY, penality);
         penality = 0;
         if (needToSpeak() == false)
           digitalWrite(SENSE_PIN, LOW);
       } else if (masterNeedsDefusingInformation == true) {
-        answer(DEFUSED_CMD, 0);
+        answer(CMD_DEFUSED, 0);
         masterNeedsDefusingInformation = false;
         if (needToSpeak() == false)
           digitalWrite(SENSE_PIN, LOW);
       } else {
-        answer(END_CMD, 0);
+        answer(CMD_END, 0);
       }
       break;
     default:
