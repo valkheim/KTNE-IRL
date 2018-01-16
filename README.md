@@ -2,7 +2,7 @@
 
 Keep Talking and Nobody Explodes, the IRL version.
 
-## Getting Started
+## Getting started
 
 This project is about creating a real version of the bomb defusal game Keep Talking and Nobody Explodes. By getting a copy of the project, you will be provided hardware schematics, software sources, documentation about inner project protocols and deployment informations.
 
@@ -19,28 +19,31 @@ You will find those two under [examples](examples/).
 
 ## Protocol
 
-Master and slaves are communicating using the following protocol which consists of a command type and a value that fit one byte.
-Slaves can only respond to the master questions. Thus, a command number refers to a question and an answer.
+Master and slaves are communicating using the following protocol which consists of sending a command and a parameter, each rely on two uint16_t.
+Slaves can only respond to the master's questions. Thus, a command number refers to a question and an answer.
 
 This table describes the questions asked by the master :
 
-| Command | Parameter    | Meaning              |
-| :-----: | :----------: | :------------------: |
-| 0       | timeleft (s) | Update timeleft      |
-| 1       |              | Defused ?            |
-| 2       | level [1;3]  | Update difficulty    |
-| 3       |              | User made misktake ? |
+| Command | Parameter    | Meaning                                 |
+| :-----: | :----------: | :-------------------------------------: |
+| 0       | timeleft (s) | Update timeleft                         |
+| 1       | level [1;3]  | Update difficulty                       |
+| 2       |              | Do you need to send some informations ? |
+| 3       |              | Request the next information            |
 
 
 This table describes the answers of the slaves :
 
-| Command | Value        | Answer                        |
-| :-----: | :----------: | :---------------------------: |
-| 0       | 1            | Ok                            |
-| 1       | 1            | Yes                           |
-| 1       | 0            | No                            |
-| 2       | 1            | Ok                            |
-| 3       | penality (s) | User potentially made mistake |
+| Command | Byte 1       | Byte 2       | Answer                        |
+| :-----: | :----------: | :----------: | :---------------------------: |
+| 0       | 1            | 0            | Ok                            |
+| 1       | 1            | 0            | Ok                            |
+| 2       | 1            | 0            | Yes                           |
+| 2       | 0            | 0            | No                            |
+| 3       | 4            | 0            | User defused the modules      |
+| 3       | 5            | penality (s) | User made mistake             |
+
+![Diagram of sequence](https://github.com/valkheim/KTNE-IRL/sequence.jpg)
 
 ## Running the tests
 

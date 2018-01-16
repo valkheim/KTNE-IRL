@@ -156,4 +156,5 @@ void setup()
   Wire.begin(getI2CAddr());
   Wire.onRequest(i2c_receive_request);
   Wire.onReceive(i2c_receive_data);
+  Serial.begin(9600);
 }

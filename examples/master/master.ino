@@ -204,14 +204,9 @@ void pingEveryone()
   {
     if (addresses[i] == true)
     {
-      Serial.print("addr : ");
-      Serial.println(i);
       requestTime(i);
       if (someoneNeedToSpeak() == true)
-      {
-        Serial.println("someoneNeedToSpeak");
         handleNeedToSpeakCommand(i, requestNeedToSpeak(i));
-      }
     }
   }
 }

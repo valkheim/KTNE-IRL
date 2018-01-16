@@ -2,6 +2,18 @@
 
 As you want to setup the project yourself, you'll better read the following guide. The project consists in one master / n slaves communicating through an I2C bus accordingly to a defined protocol.
 
+## Communication
+
+The communication between the master and the slaves is made by three wires. Two of them are used by the I2C protocol (green and yellow) and the last one (brown) is used by the slaves to notify the master when they need to transmit one or several informations.
+
+All the module have one led green (lit when module is defused) and one led red (when module is not defused).
+
+In the dumb module there is only one button used to defuse the module.
+
+The master has one additional led (yellow) used to notify the user when the bomb has exploded.
+
+![Connections between one master and two slaves](https://github.com/valkheim/KTNE-IRL/examples/poc.PNG)
+
 ## Addressing
 
 Each module needs an address to communicate on the bus. In the master, 4 pins are set to HIGH to provide a way of addressing (see `int as[] = {8, 9, 10, 11};`). The slave can use 0 to 4 pins to binary encode its address (see `getI2CAddr()`)). Let's use a diagram :
