@@ -62,6 +62,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 * **Charles Paulet** - *Initial work* - [Github](https://github.com/valkheim)
 * **Théophile Champion** - *Helper* - [Github](https://github.com/ChampiB)
+* **Nicolas-Emmanuel Robert** - *Dev* - [Github](https://github.com/6e656d6d61)
 
 See also the list of [contributors](https://github.com/valkheim/KTNE-IRL/contributors) who participated in this project.
 
