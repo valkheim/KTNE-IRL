@@ -138,6 +138,11 @@ Here is a wiring example :
 
 ![wiring](wiring.png)
 
+## Wiring the examples
+
+![wiring](wiring_poc.png)
+
+
 ## Question(s) ?
 
 Please feel free to open an [issue](https://github.com/valkheim/KTNE-IRL/issues).
