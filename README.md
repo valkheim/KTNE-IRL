@@ -43,7 +43,7 @@ This table describes the answers of the slaves :
 | 3       | 4            | 0            | User defused the modules      |
 | 3       | 5            | penality (s) | User made mistake             |
 
-![Diagram of sequence](https://github.com/valkheim/KTNE-IRL/sequence.jpg)
+![Diagramme de séquence](protocol_sequence_diagram.jpg)
 
 ## Running the tests
 
@@ -52,6 +52,7 @@ You can debug modules using serial communication.
 ## Built With
 
 * [Wire](https://www.arduino.cc/en/Reference/Wire) - I2C / TWI devices communication library
+* [Ktne_core](https://github.com/valkheim/KTNE-IRL/tree/master/ktne_core) - KTNE module core library
 
 ## Contributing
 
@@ -61,6 +62,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 * **Charles Paulet** - *Initial work* - [Github](https://github.com/valkheim)
 * **Théophile Champion** - *Helper* - [Github](https://github.com/ChampiB)
+* **Nicolas-Emmanuel Robert** - *Dev* - [Github](https://github.com/6e656d6d61)
 
 See also the list of [contributors](https://github.com/valkheim/KTNE-IRL/contributors) who participated in this project.
 

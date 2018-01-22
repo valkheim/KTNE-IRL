@@ -26,12 +26,9 @@ bool win(uint8_t difficulty)
 
 void loop()
 {
-  /* Begin module's logic */
   if (digitalRead(BUTTON) == HIGH)
     if (win(difficulty) == true)
       defuseModule();
-  /* End module's logic */
-  updateModuleStatus();
 }
 
 void setup()
