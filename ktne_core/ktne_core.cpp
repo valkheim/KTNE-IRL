@@ -4,9 +4,7 @@
 /* Init default values */
 uint16_t difficulty = 1;
 uint16_t timeleft = 0xFFFF;
-
 static int as[] = {8, 9, 10, 11};
-static const size_t sizeof_as = sizeof(as);
 static bool masterNeedsDefusingInformation = false;
 static uint16_t penality = 0;
 static uint16_t command = 0;
@@ -87,7 +85,7 @@ static uint8_t getI2CAddr()
 {
   uint8_t addr = 0;
 
-  for (int i = 0 ; i < sizeof_as / sizeof(as[0]) ; ++i) {
+  for (int i = 0 ; i < sizeof(as) / sizeof(as[0]) ; ++i) {
     pinMode(as[i], INPUT);
     addr = addr | (digitalRead(as[i]) << i);
   }
