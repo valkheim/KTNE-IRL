@@ -8,8 +8,8 @@
 # endif
 
 // Output
-# define RED_LED (2)
-# define GREEN_LED (3)
+# define LED_RED (2)
+# define LED_GREEN (3)
 # define SENSE_PIN (7)
 
 // Command
@@ -33,24 +33,10 @@
 # define MEDIUM (2)
 # define EASY (1)
 
-extern int as[]; // Pins used to read the module's address
-
-extern const size_t sizeof_as;
-extern uint16_t timeleft;
 extern uint16_t difficulty;
-extern bool masterNeedsDefusingInformation;
-extern uint16_t penality;
-extern uint16_t command;   // Last command sent by master
-extern uint16_t parameter; // Last command's parameter sent by master
+extern uint16_t timeleft;
 
-extern void setupCore();
-extern uint8_t getI2CAddr();
-extern uint16_t readUnit16();
-extern void i2c_receive_data(int count);
-extern void writeUint16(uint16_t i);
-extern void answer(uint16_t command, uint16_t parameter);
-extern bool needToSpeak();
-extern void i2c_receive_request();
-extern void defuseModule();
+void setupCore();
+void defuseModule();
 
 #endif

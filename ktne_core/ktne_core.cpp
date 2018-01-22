@@ -2,45 +2,17 @@
 #include "ktne_core.h"
 
 /* Init default values */
-int as[] = {8, 9, 10, 11};
-const size_t sizeof_as = sizeof(as);
-uint16_t timeleft = 0xFFFF;
 uint16_t difficulty = 1;
-bool masterNeedsDefusingInformation = false;
-uint16_t penality = 0;
-uint16_t command = 0;
-uint16_t parameter = 0;
+uint16_t timeleft = 0xFFFF;
 
-void setupCore()
-{
-  /* Init pins */
-  pinMode(RED_LED, OUTPUT);
-  pinMode(GREEN_LED, OUTPUT);
-  pinMode(SENSE_PIN, OUTPUT);
-  digitalWrite(SENSE_PIN, LOW);
-  digitalWrite(RED_LED, HIGH);
-  digitalWrite(GREEN_LED, LOW);
-  /* Init communication */
-  Wire.begin(getI2CAddr());
-  Wire.onRequest(i2c_receive_request);
-  Wire.onReceive(i2c_receive_data);
-  Serial.begin(9600);
-  Serial.println("Core setted up");
-}
+static int as[] = {8, 9, 10, 11};
+static const size_t sizeof_as = sizeof(as);
+static bool masterNeedsDefusingInformation = false;
+static uint16_t penality = 0;
+static uint16_t command = 0;
+static uint16_t parameter = 0;
 
-// Read module address from its reserved addresses pins
-uint8_t getI2CAddr()
-{
-  uint8_t addr = 0;
-
-  for (int i = 0 ; i < sizeof_as / sizeof(as[0]) ; ++i) {
-    pinMode(as[i], INPUT);
-    addr = addr | (digitalRead(as[i]) << i);
-  }
-  return addr;
-}
-
-uint16_t readUnit16()
+static uint16_t readUnit16()
 {
   uint16_t res;
 
@@ -49,30 +21,30 @@ uint16_t readUnit16()
   return res;
 }
 
-void i2c_receive_data(int count)
+static void i2c_receive_data(int count)
 {
   command   = readUnit16();
   parameter = readUnit16();
 }
 
-void writeUint16(uint16_t i)
+static void writeUint16(uint16_t i)
 {
   Wire.write(i);
   Wire.write(i >> 8);
 }
 
-void answer(uint16_t command, uint16_t parameter)
+static void answer(uint16_t command, uint16_t parameter)
 {
   writeUint16(command);
   writeUint16(parameter);
 }
 
-bool needToSpeak()
+static bool needToSpeak()
 {
   return (penality != 0 || masterNeedsDefusingInformation == true);
 }
 
-void i2c_receive_request()
+static void i2c_receive_request()
 {
   switch(command)
   {
@@ -110,10 +82,39 @@ void i2c_receive_request()
   }
 }
 
+// Read module address from its reserved addresses pins
+static uint8_t getI2CAddr()
+{
+  uint8_t addr = 0;
+
+  for (int i = 0 ; i < sizeof_as / sizeof(as[0]) ; ++i) {
+    pinMode(as[i], INPUT);
+    addr = addr | (digitalRead(as[i]) << i);
+  }
+  return addr;
+}
+
+void setupCore()
+{
+  /* Init pins */
+  pinMode(LED_RED, OUTPUT);
+  pinMode(LED_GREEN, OUTPUT);
+  pinMode(SENSE_PIN, OUTPUT);
+  digitalWrite(SENSE_PIN, LOW);
+  digitalWrite(LED_RED, HIGH);
+  digitalWrite(LED_GREEN, LOW);
+  /* Init communication */
+  Wire.begin(getI2CAddr());
+  Wire.onRequest(i2c_receive_request);
+  Wire.onReceive(i2c_receive_data);
+  Serial.begin(9600);
+  Serial.println("Core setted up");
+}
+
 void defuseModule()
 {
   digitalWrite(SENSE_PIN, HIGH);
   masterNeedsDefusingInformation = true;
-  digitalWrite(RED_LED, LOW);
-  digitalWrite(GREEN_LED, HIGH);
+  digitalWrite(LED_RED, LOW);
+  digitalWrite(LED_GREEN, HIGH);
 }
