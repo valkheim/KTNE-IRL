@@ -5,7 +5,7 @@ bool addresses[127] = {false};
 uint16_t timeleft = 300;   // 5 minutes
 uint16_t difficulty = 1;   // Easy
 
-bool defused = false;      // Is the bombe defused ?
+bool defused = false;      // Is the bomb defused ?
 
 // Message's structure
 struct BusMessage
