@@ -1,3 +1,5 @@
+#include <ktne_core.h>
+
 #define BUTTON (4)
 
 void loop()

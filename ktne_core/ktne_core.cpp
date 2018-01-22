@@ -1,47 +1,30 @@
 #include <Wire.h>
-// Output
-#define RED_LED (2)
-#define GREEN_LED (3)
-#define SENSE_PIN (7)
+#include "ktne_core.h"
 
-// Command
-# define CMD_TIME (0)
-# define CMD_DIFFICULTY (1)
-# define CMD_NEED_TO_SPEAK (2)
-# define CMD_INFO (3)
-
-# define CMD_DEFUSED (4)
-# define CMD_PENALITY (5)
-# define CMD_END (6)
-
-// Answer
-# define ANSWER_YES (1)
-# define ANSWER_NO (0)
-# define ANSWER_OK (1)
-
-int as[] = {8, 9, 10, 11}; // Pins used to read the module's address
-
-uint16_t timeleft = 0xFFFF;
-uint16_t difficulty = 1;
-
-
-bool masterNeedsDefusingInformation = false;
-uint16_t defused = 0;
-uint16_t penality = 0;
-
-uint16_t command = 0;   // Last command sent by master
-uint16_t parameter = 0; // Last command's parameter sent by master
+  /* Init default values */
+  int as[] = {8, 9, 10, 11};
+  const size_t sizeof_as = sizeof(as);
+  uint16_t timeleft = 0xFFFF;
+  uint16_t difficulty = 1;
+  bool masterNeedsDefusingInformation = false;
+  uint16_t defused = 0;
+  uint16_t penality = 0;
+  uint16_t command = 0;
+  uint16_t parameter = 0;
 
 void setupCore()
 {
+  /* Init pins */
   pinMode(RED_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
   pinMode(SENSE_PIN, OUTPUT);
   digitalWrite(SENSE_PIN, LOW);
+  /* Init communication */
   Wire.begin(getI2CAddr());
   Wire.onRequest(i2c_receive_request);
   Wire.onReceive(i2c_receive_data);
   Serial.begin(9600);
+  Serial.println("Core setted up");
 }
 
 // Read module address from its reserved addresses pins
@@ -49,7 +32,7 @@ uint8_t getI2CAddr()
 {
   uint8_t addr = 0;
 
-  for (int i = 0 ; i < sizeof(as) / sizeof(as[0]) ; ++i) {
+  for (int i = 0 ; i < sizeof_as / sizeof(as[0]) ; ++i) {
     pinMode(as[i], INPUT);
     addr = addr | (digitalRead(as[i]) << i);
   }
@@ -146,4 +129,3 @@ void defuseModule()
   masterNeedsDefusingInformation = true;
   defused = 1;
 }
-

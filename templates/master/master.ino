@@ -14,12 +14,12 @@ struct BusMessage
 };
 
 // Output
-#define RED_LED (2)
-#define GREEN_LED (3)
-#define YELLOW_LED (4)
+# define RED_LED (2)
+# define GREEN_LED (3)
+# define YELLOW_LED (4)
 
 // Input
-#define SENSE_PIN (7)
+# define SENSE_PIN (7)
 
 // Command
 # define CMD_TIME (0)
@@ -35,6 +35,12 @@ struct BusMessage
 # define ANSWER_YES (1)
 # define ANSWER_NO (0)
 # define ANSWER_OK (1)
+
+// Difficulty
+# define MAX_DIFFICULTY (3)
+# define HARD (3)
+# define MEDIUM (2)
+# define EASY (1)
 
 void printDeviceFound(uint8_t address)
 {
@@ -148,7 +154,7 @@ BusMessage receiveFrom(uint8_t addr)
   byte tmp = 0;
   int i = 0;
 
-  Wire.requestFrom(addr, 4);
+  Wire.requestFrom((int)addr, 4);
   while(Wire.available())
   {
     tmp = (byte)Wire.read();
