@@ -1,0 +1,212 @@
+% Changing book to article will make the footers match on each page,
+% rather than alternate every other.
+%
+% Note that the article class does not have chapters.
+%\documentclass[letterpaper,10pt,twoside,twocolumn,openany]{book}
+\documentclass[letterpaper,12pt,openany]{extbook}
+
+\usepackage[francais]{babel}
+
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+
+
+\usepackage{dnd}
+
+\lstset{%
+  basicstyle=\ttfamily,
+  language=[LaTeX]{TeX},
+}
+
+% Start document
+\begin{document}
+\AddToShipoutPicture{\BackgroundPic}
+
+\begin{titlepage} % Suppresses displaying the page number on the title page and the subsequent page counts as page 1
+
+  \raggedleft % Right align the title page
+
+  \rule{1pt}{\textheight} % Vertical line
+  \hspace{0.05\textwidth} % Whitespace between the vertical line and title page text
+  \parbox[b]{0.75\textwidth}{ % Paragraph box for holding the title page text, adjust the width to move the title page left or right on the page
+
+    {\color{titlered}\Huge\bfseries Manuel de désamorçage}\\[2\baselineskip] % Title
+    {\large\textit{À manier avec précaution}}\\[4\baselineskip] % Subtitle or further description
+    {
+      \textsc{Charles Paulet \\[0.5\baselineskip]
+        Léo Paol \\[0.5\baselineskip]
+        Théophile Champion \\[0.5\baselineskip]
+        Nicolas-Emmanuel Robert
+      }
+    }
+
+    \vspace{0.5\textheight} % Whitespace between the title block and the publisher
+
+    {\noindent \url{https://github.com/valkheim/KTNE-IRL} }\\[\baselineskip]
+  }
+
+\end{titlepage}
+% Your content goes here
+
+% Comment this out if you're using the article class.
+\chapter{Chapter 1: The Dark \LaTeX}
+
+\section{Main Section}
+\lipsum[2] % filler text
+
+\begin{quotebox}
+  Ceci est une \lstinline!quotebox!, elle sert à citer quelque chose mais
+  c'est aussi un joli ruban utilisable un peu partout. 
+\end{quotebox}
+
+\subsection{Subsection}
+\subsubsection{subsubsection}
+
+\begin{commentbox}{Commentbox}
+  Je suis une \lstinline!commentbox!. Je suis une \lstinline!paperbox! dans 
+\end{commentbox}
+
+\lipsum[3]
+
+\begin{figure}[!t]
+  \begin{paperbox}{Behold, the Paperbox!}
+    Je suis une \lstinline!paperbox! . Je suis flottant dans un
+  coin de page. Dans l'idéal, je suis utilisé avec un environnement figure.
+  \end{paperbox}
+\end{figure}
+
+% For more columns, you can say \begin{dndtable}[your options here].
+% For instance, if you wanted three columns, you could say
+% \begin{dndtable}[XXX]. The usual host of tabular parameters are
+% available as well.
+  \header{Joli tableau}
+  \begin{dndtable}
+    \textbf{head}  & \textbf{head} \\
+    value  & value \\
+    value  & value \\
+    value  & value
+  \end{dndtable}
+
+  \lipsum[2]
+
+  % You can optionally not include the background by saying
+  % begin{moduleboxnobg}
+  \begin{modulebox}{Module}
+    \begin{hangingpar}
+      \textit{Exemple de module}
+    \end{hangingpar}
+    \modulesection{Description}
+    \begin{moduleaction}[Difficulté]
+      Vraiment très facile.
+    \end{moduleaction}
+    \hline%
+    \modulesection{Composants :}
+    \begin{moduleaction}[Bouton]
+      J'ai un bouton connecté sur le pin 4.
+    \end{moduleaction}
+
+    \begin{moduleaction}[Leds]
+      Mes leds rouges et vertes indiquent si je suis actif ou non.
+    \end{moduleaction}
+  \end{modulebox}
+
+  \section{Colors}
+
+  Ce paquet donne accès à pas mal de couleurs pour styliser les
+  \lstinline!commentbox!, \lstinline!quotebox!, \lstinline!paperbox!, et les
+  \lstinline!dndtable!.
+
+  \begin{dndtable}[lX]
+    \textbf{Color}         & \textbf{Description} \\
+    \lstinline!commentboxcolor! &  \lstinline!commentbox! background. \\
+    \lstinline!paperboxcolor!   &  \lstinline!paperbox! background. \\
+    \lstinline!quoteboxcolor!   &  \lstinline!quotebox! background. \\
+    \lstinline!tablecolor!      &  background des lignes \lstinline!dndtable! paires. \\
+  \end{dndtable}
+
+  Voir tableau~\ref{tab:colors} pour une liste des couleurs.
+
+  \begin{table*}
+    \begin{dndtable}[XX]
+      \textbf{Color}
+      \lstinline!PhbLightGreen!
+      \lstinline!PhbLightCyan!
+      \lstinline!PhbMauve!
+      \lstinline!PhbTan!
+      \lstinline!DmgLavender!
+      \lstinline!DmgCoral!
+      \lstinline!DmgSlateGray! (\lstinline!DmgSlateGrey!)
+      \lstinline!DmgLilac!
+    \end{dndtable}
+    \caption{Couleurs du package}%
+    \label{tab:colors}
+  \end{table*}
+
+  \begin{itemize}
+    \item Utilisez \lstinline!\setthemecolor[<color>]! pour changer la couleurs
+      de \lstinline!themecolor!, \lstinline!commentcolor!,
+      \lstinline!paperboxcolor!, ou \lstinline!tablecolor!.
+    \item \lstinline!\setthemecolor! sans argument met la couleur du
+      \lstinline!themecolor! actuel.
+    \item \lstinline!commentbox!, \lstinline!dndtable!, \lstinline!paperbox!, et
+      \lstinline!quoteboxcolor! acceptent aussi un argument de couleur optionnel.
+  \end{itemize}
+
+\subsection{Exemples}
+
+\subsubsection{Utiliser \lstinline!themecolor! avec \lstinline!PhbMauve!}
+
+\begin{lstlisting}
+\setthemecolor[PhbMauve]
+
+\begin{paperbox}{Exemple}
+  \lipsum[2]
+\end{paperbox}
+
+\setthemecolor[PhbLightCyan]
+
+\header{Exemple}
+\begin{dndtable}[cX]
+  \textbf{d2} & \textbf{Item} \\
+  1           & Super projet \\
+  2           & Beau manuel \\
+\end{dndtable}
+\end{lstlisting}
+
+\begingroup
+\setthemecolor[PhbMauve]
+
+\begin{paperbox}{Exemple}
+  \lipsum[2]
+\end{paperbox}
+
+\setthemecolor[PhbLightCyan]
+
+\header{Exemple}
+\begin{dndtable}[cX]
+  \textbf{d2} & \textbf{Item} \\
+  1           & Super projet \\
+  2           & Beau manuel \\
+\end{dndtable}
+\endgroup
+
+\subsubsection{Utiliser les arguments de couleur}
+
+\begin{lstlisting}
+\begin{dndtable}[cX][DmgCoral]
+  \textbf{d2} & \textbf{Item} \\
+  1           & Super projet \\
+  2           & Beau manuel \\
+\end{dndtable}
+\end{lstlisting}
+
+\begin{dndtable}[cX][DmgCoral]
+  \textbf{d2} & \textbf{Item} \\
+  1           & Super projet \\
+  2           & Beau manuel \\
+\end{dndtable}
+
+% End document
+\end{document}

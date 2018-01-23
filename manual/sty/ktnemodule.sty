@@ -1,0 +1,71 @@
+% module environment sty file
+\RequirePackage{fp}
+\RequirePackage{xstring}
+
+% module box made to look like the Monster Manual NPC definitions
+\newtcolorbox{moduleboxnobg}[2][]{
+  enhanced,
+  frame hidden,
+  boxrule=0pt,
+  breakable,
+  boxsep=0pt,
+  toptitle=3mm,
+  left=0pt,
+  right=0pt,
+  arc=0mm,
+  opacityback=0,
+  colframe=titlered,
+  fonttitle=\dnd@StatBlockTitleFont\Large,
+  fontupper=\dnd@StatBlockBodyFont,
+  title=#2,
+  coltitle=titlered,
+  #1
+}
+
+% new modulebox
+\iftoggle{bool-bg}{
+  \newtcolorbox{modulebox}[2][]{
+    enhanced,
+    frame hidden,
+    before skip=7pt plus 2pt,
+    boxrule=0pt,
+    breakable,
+    boxsep=0pt,
+    toptitle=11pt,
+    left=7pt,
+    right=7pt,
+    bottom=11pt,
+    arc=0mm,
+    oversize=0pt,
+    borderline north={4pt}{0pt}{titlered},
+    borderline north={2.5pt}{0.75pt}{statblockribbon},
+    borderline south={4pt}{0pt}{titlered},
+    borderline south={2.5pt}{0.75pt}{statblockribbon},
+    colback=statblockbg,
+    colbacktitle=statblockbg,
+    colframe=titlered,
+    fonttitle=\dnd@StatBlockTitleFont\Large,
+    coltitle=titlered,
+    fontupper=\dnd@StatBlockBodyFont,
+    title=#2,
+    #1
+  }
+}{
+  \let\modulebox\monsterboxnobg%
+  \let\endmodulebox\endmonsterboxnobg%
+}
+
+
+% Define module subsection header style
+%\newcommand{\modulesection}[1]{\subsubsection*{#1}}
+\newcommand{\modulesection}[1]{
+  \begingroup
+    \par\medskip\color{titlered}
+    \dnd@StatBlockSubtitleFont\large #1 \vspace{3pt}
+    \titleline{\titlerule[0.6pt]}
+    \vspace{3pt}
+  \endgroup
+}
+
+\newenvironment{moduleaction}[1][\unskip]{
+  \smallskip\emph{\textbf{#1.}}}{\\}
