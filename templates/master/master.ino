@@ -1,25 +1,18 @@
 #include <Wire.h>
 
-bool addresses[127] = {false};
+// Output : Module
+# define PIN_RED_LED (10)
+# define PIN_GREEN_LED (11)
+# define PIN_YELLOW_LED (12)
 
-uint16_t timeleft = 300;   // 5 minutes
-uint16_t difficulty = 1;   // Easy
-
-bool defused = false;      // Is the bomb defused ?
-
-// Message's structure
-struct BusMessage
-{
-  uint16_t data[2];
-};
-
-// Output
-# define RED_LED (2)
-# define GREEN_LED (3)
-# define YELLOW_LED (4)
+// Output : Difficulty
+# define PIN_EASY (5)
+# define PIN_MEDIUM (6)
+# define PIN_HARD (8)
 
 // Input
-# define SENSE_PIN (7)
+# define PIN_SENSE (7)
+# define PIN_BUTTON_DIFF (2)
 
 // Command
 # define CMD_TIME (0)
@@ -41,6 +34,19 @@ struct BusMessage
 # define HARD (3)
 # define MEDIUM (2)
 # define EASY (1)
+
+bool addresses[127] = {false};
+
+uint16_t timeleft = 300;    // 5 minutes
+uint16_t difficulty = HARD;
+
+bool defused = false;       // Is the bomb defused ?
+
+// Message's structure
+struct BusMessage
+{
+  uint16_t data[2];
+};
 
 void printDeviceFound(uint8_t address)
 {
@@ -166,7 +172,7 @@ BusMessage receiveFrom(uint8_t addr)
 
 bool someoneNeedToSpeak()
 {
-  return digitalRead(SENSE_PIN);
+  return digitalRead(PIN_SENSE);
 }
 
 void decreaseTimeLeft(uint16_t nb_sec)
@@ -231,13 +237,43 @@ void updateModuleStatus()
 {
   if (defused == false)
   {
-    digitalWrite(RED_LED, HIGH);
-    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(PIN_RED_LED, HIGH);
+    digitalWrite(PIN_GREEN_LED, LOW);
   }
   else
   {
-    digitalWrite(RED_LED, LOW);
-    digitalWrite(GREEN_LED, HIGH);
+    digitalWrite(PIN_RED_LED, LOW);
+    digitalWrite(PIN_GREEN_LED, HIGH);
+  }
+}
+
+void increaseDiff()
+{
+  difficulty += 1;
+  if (difficulty > HARD)
+    difficulty = EASY;
+}
+
+void updateDifficulty()
+{
+  increaseDiff();
+  if (difficulty == EASY)
+  {
+    digitalWrite(PIN_EASY, HIGH);
+    digitalWrite(PIN_MEDIUM, LOW);
+    digitalWrite(PIN_HARD, LOW);
+  }
+  else if (difficulty == MEDIUM)
+  {
+    digitalWrite(PIN_EASY, LOW);
+    digitalWrite(PIN_MEDIUM, HIGH);
+    digitalWrite(PIN_HARD, LOW);
+  }
+  else
+  {
+    digitalWrite(PIN_EASY, LOW);
+    digitalWrite(PIN_MEDIUM, LOW);
+    digitalWrite(PIN_HARD, HIGH);
   }
 }
 
@@ -254,7 +290,7 @@ void HandlePlay()
 
 void HandleBombeExplosion()
 {
-  digitalWrite(YELLOW_LED, HIGH);
+  digitalWrite(PIN_YELLOW_LED, HIGH);
 }
 
 void loop()
@@ -268,10 +304,16 @@ void loop()
 
 void setup()
 {
-  pinMode(SENSE_PIN, INPUT);
-  pinMode(RED_LED, OUTPUT);
-  pinMode(GREEN_LED, OUTPUT);
-  pinMode(YELLOW_LED, OUTPUT);
+  updateDifficulty();
+  attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_DIFF), updateDifficulty, RISING);
+  pinMode(PIN_EASY , OUTPUT);
+  pinMode(PIN_MEDIUM, OUTPUT);
+  pinMode(PIN_HARD, OUTPUT);
+  pinMode(PIN_SENSE, INPUT);
+  pinMode(PIN_BUTTON_DIFF, INPUT);
+  pinMode(PIN_RED_LED, OUTPUT);
+  pinMode(PIN_GREEN_LED, OUTPUT);
+  pinMode(PIN_YELLOW_LED, OUTPUT);
   Wire.begin();
   Serial.begin(9600);
   while (!Serial);
