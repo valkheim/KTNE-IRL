@@ -336,28 +336,29 @@ void setup()
 
 void printNumber(int myDataPin, int myClockPin, int myLatchPin, byte number)
 {
+  // The i-th element of this table correspond to a binary map used to display the number i on a 7 segments
   uint8_t tab[10] = {119, 20, 179, 182, 212, 230, 231, 52, 247, 246};
-    
+
   digitalWrite(myLatchPin, 0);
   shiftOut(myDataPin, myClockPin, tab[number % 10]);
   shiftOut(myDataPin, myClockPin, tab[number / 10]);
   digitalWrite(myLatchPin, 1);
 }
 
-void shiftOut(int myDataPin, int myClockPin, byte myDataOut) {
+void shiftOut(int myDataPin, int myClockPin, byte myDataOut)
+{
   int i=0;
   int pinState;
 
   digitalWrite(myDataPin, 0);
   digitalWrite(myClockPin, 0);
-  for (i=7; i>=0; i--)  {
+  for (i=7; i>=0; i--)
+  {
     digitalWrite(myClockPin, 0);
-    if ( myDataOut & (1<<i) ) {
+    if ( myDataOut & (1<<i) )
       pinState= 1;
-    }
-    else {  
+    else
       pinState= 0;
-    }
     digitalWrite(myDataPin, pinState);
     digitalWrite(myClockPin, 1);
     digitalWrite(myDataPin, 0);
