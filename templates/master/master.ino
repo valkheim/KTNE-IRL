@@ -1,9 +1,16 @@
 #include <Wire.h>
 
-// Output : Module
-# define PIN_RED_LED (10)
-# define PIN_GREEN_LED (11)
-# define PIN_YELLOW_LED (12)
+// Output : 7 segments
+# define MINUTE_LATCH (12)
+# define MINUTE_CLOCK (11)
+# define MINUTE_DATA (3)
+
+# define SEC_LATCH (4)
+# define SEC_CLOCK (9)
+# define SEC_DATA (13)
+
+// Output : Status
+# define PIN_NOT_DEFUSED (10)
 
 // Output : Difficulty
 # define PIN_EASY (5)
@@ -236,15 +243,9 @@ bool areAllDefused()
 void updateModuleStatus()
 {
   if (defused == false)
-  {
-    digitalWrite(PIN_RED_LED, HIGH);
-    digitalWrite(PIN_GREEN_LED, LOW);
-  }
+    digitalWrite(PIN_NOT_DEFUSED, HIGH);
   else
-  {
-    digitalWrite(PIN_RED_LED, LOW);
-    digitalWrite(PIN_GREEN_LED, HIGH);
-  }
+    digitalWrite(PIN_NOT_DEFUSED, LOW);
 }
 
 void increaseDiff()
@@ -277,12 +278,19 @@ void updateDifficulty()
   }
 }
 
+void printTime()
+{
+  printNumber(MINUTE_DATA, MINUTE_CLOCK, MINUTE_LATCH, timeleft / 60);
+  printNumber(SEC_DATA, SEC_CLOCK, SEC_LATCH, timeleft % 60);
+}
+
 void HandlePlay()
 {
   if (defused == false)
   {
     pingEveryone();
     decreaseTimeLeft(1);
+    printTime();
     defused = areAllDefused();
   }
   updateModuleStatus();
@@ -290,7 +298,7 @@ void HandlePlay()
 
 void HandleBombeExplosion()
 {
-  digitalWrite(PIN_YELLOW_LED, HIGH);
+  // Handle bombe explosion
 }
 
 void loop()
@@ -304,6 +312,13 @@ void loop()
 
 void setup()
 {
+  pinMode(MINUTE_LATCH, OUTPUT);
+  pinMode(MINUTE_CLOCK, OUTPUT);
+  pinMode(MINUTE_DATA, OUTPUT);
+  pinMode(SEC_LATCH, OUTPUT);
+  pinMode(SEC_CLOCK, OUTPUT);
+  pinMode(SEC_DATA, OUTPUT);
+  printTime();
   updateDifficulty();
   attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_DIFF), updateDifficulty, RISING);
   pinMode(PIN_EASY , OUTPUT);
@@ -311,11 +326,43 @@ void setup()
   pinMode(PIN_HARD, OUTPUT);
   pinMode(PIN_SENSE, INPUT);
   pinMode(PIN_BUTTON_DIFF, INPUT);
-  pinMode(PIN_RED_LED, OUTPUT);
-  pinMode(PIN_GREEN_LED, OUTPUT);
-  pinMode(PIN_YELLOW_LED, OUTPUT);
+  pinMode(PIN_NOT_DEFUSED, OUTPUT);
   Wire.begin();
   Serial.begin(9600);
   while (!Serial);
+  delay(1000);
   scan();
 }
+
+void printNumber(int myDataPin, int myClockPin, int myLatchPin, byte number)
+{
+  uint8_t tab[10] = {119, 20, 179, 182, 212, 230, 231, 52, 247, 246};
+    
+  digitalWrite(myLatchPin, 0);
+  shiftOut(myDataPin, myClockPin, tab[number % 10]);
+  shiftOut(myDataPin, myClockPin, tab[number / 10]);
+  digitalWrite(myLatchPin, 1);
+}
+
+void shiftOut(int myDataPin, int myClockPin, byte myDataOut) {
+  int i=0;
+  int pinState;
+
+  digitalWrite(myDataPin, 0);
+  digitalWrite(myClockPin, 0);
+  for (i=7; i>=0; i--)  {
+    digitalWrite(myClockPin, 0);
+    if ( myDataOut & (1<<i) ) {
+      pinState= 1;
+    }
+    else {  
+      pinState= 0;
+    }
+    digitalWrite(myDataPin, pinState);
+    digitalWrite(myClockPin, 1);
+    digitalWrite(myDataPin, 0);
+  }
+  digitalWrite(myClockPin, 0);
+}
+
+
