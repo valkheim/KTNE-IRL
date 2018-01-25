@@ -1,5 +1,5 @@
-#ifndef CORE_H_
-# define CORE_H_
+#ifndef KTNE_CORE_H_
+# define KTNE_CORE_H_
 
 # if ARDUINO >= 100
 #  include "Arduino.h"
