@@ -2,4 +2,4 @@
 
 This is the defusing manual. It provides all necessary informations (and even more) to defuse the bomb !
 
-The documents are adapted from [a D&D template](https://github.com/evanbergeron/DND-5e-LaTeX-Template).
+These documents are adapted from [a D&D template](https://github.com/evanbergeron/DND-5e-LaTeX-Template).
