@@ -7,12 +7,12 @@
 #  include "WProgram.h"
 # endif
 
-// Output
+/* Output */
 # define LED_RED (2)
 # define LED_GREEN (3)
 # define SENSE_PIN (7)
 
-// Command
+/* Command */
 # define CMD_TIME (0)
 # define CMD_DIFFICULTY (1)
 # define CMD_NEED_TO_SPEAK (2)
@@ -22,12 +22,12 @@
 # define CMD_PENALITY (5)
 # define CMD_END (6)
 
-// Answer
+/* Answer */
 # define ANSWER_YES (1)
 # define ANSWER_NO (0)
 # define ANSWER_OK (1)
 
-// Difficulty
+/* Difficulty */
 # define MAX_DIFFICULTY (3)
 # define HARD (3)
 # define MEDIUM (2)
