@@ -47,7 +47,8 @@ bool addresses[127] = {false};
 uint16_t timeleft = 300;    // 5 minutes
 uint16_t difficulty = HARD;
 
-bool defused = false;       // Is the bomb defused ?
+bool defused = false;             // Is the bomb defused ?
+bool needDifficultyUpdate = true;
 
 // Message's structure
 struct BusMessage
@@ -224,10 +225,13 @@ void pingEveryone()
     if (addresses[i] == true)
     {
       requestTime(i);
+      if (needDifficultyUpdate == true)
+        requestDifficulty(i);
       if (someoneNeedToSpeak() == true)
         handleNeedToSpeakCommand(i, requestNeedToSpeak(i));
     }
   }
+  needDifficultyUpdate = false;
 }
 
 bool areAllDefused()
@@ -276,6 +280,39 @@ void updateDifficulty()
     digitalWrite(PIN_MEDIUM, LOW);
     digitalWrite(PIN_HARD, HIGH);
   }
+  needDifficultyUpdate = true;
+}
+
+void shiftOut(int myDataPin, int myClockPin, byte myDataOut)
+{
+  int i=0;
+  int pinState;
+
+  digitalWrite(myDataPin, 0);
+  digitalWrite(myClockPin, 0);
+  for (i=7; i>=0; i--)
+  {
+    digitalWrite(myClockPin, 0);
+    if ( myDataOut & (1<<i) )
+      pinState= 1;
+    else
+      pinState= 0;
+    digitalWrite(myDataPin, pinState);
+    digitalWrite(myClockPin, 1);
+    digitalWrite(myDataPin, 0);
+  }
+  digitalWrite(myClockPin, 0);
+}
+
+void printNumber(int myDataPin, int myClockPin, int myLatchPin, byte number)
+{
+  // The i-th element of this table correspond to a binary map used to display the number i on a 7 segments
+  uint8_t tab[10] = {119, 20, 179, 182, 212, 230, 231, 52, 247, 246};
+
+  digitalWrite(myLatchPin, 0);
+  shiftOut(myDataPin, myClockPin, tab[number % 10]);
+  shiftOut(myDataPin, myClockPin, tab[number / 10]);
+  digitalWrite(myLatchPin, 1);
 }
 
 void printTime()
@@ -318,52 +355,20 @@ void setup()
   pinMode(SEC_LATCH, OUTPUT);
   pinMode(SEC_CLOCK, OUTPUT);
   pinMode(SEC_DATA, OUTPUT);
-  printTime();
-  updateDifficulty();
-  attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_DIFF), updateDifficulty, RISING);
   pinMode(PIN_EASY , OUTPUT);
   pinMode(PIN_MEDIUM, OUTPUT);
   pinMode(PIN_HARD, OUTPUT);
   pinMode(PIN_SENSE, INPUT);
   pinMode(PIN_BUTTON_DIFF, INPUT);
   pinMode(PIN_NOT_DEFUSED, OUTPUT);
+  digitalWrite(PIN_NOT_DEFUSED, HIGH);
+  printTime();
+  updateDifficulty();
+  attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_DIFF), updateDifficulty, RISING);
   Wire.begin();
   Serial.begin(9600);
   while (!Serial);
   delay(1000);
   scan();
 }
-
-void printNumber(int myDataPin, int myClockPin, int myLatchPin, byte number)
-{
-  // The i-th element of this table correspond to a binary map used to display the number i on a 7 segments
-  uint8_t tab[10] = {119, 20, 179, 182, 212, 230, 231, 52, 247, 246};
-
-  digitalWrite(myLatchPin, 0);
-  shiftOut(myDataPin, myClockPin, tab[number % 10]);
-  shiftOut(myDataPin, myClockPin, tab[number / 10]);
-  digitalWrite(myLatchPin, 1);
-}
-
-void shiftOut(int myDataPin, int myClockPin, byte myDataOut)
-{
-  int i=0;
-  int pinState;
-
-  digitalWrite(myDataPin, 0);
-  digitalWrite(myClockPin, 0);
-  for (i=7; i>=0; i--)
-  {
-    digitalWrite(myClockPin, 0);
-    if ( myDataOut & (1<<i) )
-      pinState= 1;
-    else
-      pinState= 0;
-    digitalWrite(myDataPin, pinState);
-    digitalWrite(myClockPin, 1);
-    digitalWrite(myDataPin, 0);
-  }
-  digitalWrite(myClockPin, 0);
-}
-
 
