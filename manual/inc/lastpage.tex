@@ -1,0 +1,10 @@
+\begin{tikzpicture}[
+    overlay,
+    remember picture,
+    mynode/.style={left,fill=yellow!10,general shadow={shadow scale=1, shadow xshift=-0.8ex, shadow yshift=-0.8ex, opacity=1, fill=gray!50}},
+  ]
+  \node[mynode] at ($(current page.north east)+(-0.2,-6)$) {\fontsize{25}{30}\selectfont \textbf{KTNE the IRL version}};
+  \node[mynode] at ($(current page.north east)+(-0.5,-8)$) {\fontsize{20}{24}\selectfont \textsc{evil engineers of evil corporation}};
+  \node[mynode] at ($(current page.north east)+(-0.8,-10)$) {\fontsize{15}{18}\selectfont EvilTek, 2018};
+  \node[above right] at ($(current page.south west)+(2,2)$) {\includegraphics[scale=0.2]{img/barcode}};
+\end{tikzpicture}

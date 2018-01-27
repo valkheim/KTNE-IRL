@@ -1,0 +1,47 @@
+%\documentclass[letterpaper,10pt,twoside,twocolumn,openany]{book}
+\documentclass[letterpaper,12pt,openany]{extbook}
+
+\usepackage[francais]{babel}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{lipsum}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{dnd}
+
+\usepackage{tikz}
+\usetikzlibrary{calc,shadows}
+
+\lstset{%
+  basicstyle=\ttfamily,
+  language=[LaTeX]{TeX},
+}
+\setlength{\parindent}{4em}
+\setlength{\parskip}{1em}
+\renewcommand{\baselinestretch}{1.5}
+
+
+\newcommand{\md}{·}
+\newcommand{\lvlEasy}{facile}
+\newcommand{\lvlMedium}{moyen}
+\newcommand{\lvlHard}{difficile}
+
+
+% Start document
+\begin{document}
+\AddToShipoutPicture{\BackgroundPic}
+
+\input{inc/firstpage}
+
+\renewcommand{\contentsname}{Contenu du manuel}
+\tableofcontents
+
+\input{inc/intro}
+\input{inc/modules_intro}
+\input{inc/modules}
+
+\newpage
+\input{inc/lastpage}
+\end{document}
