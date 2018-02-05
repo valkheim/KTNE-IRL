@@ -2,7 +2,15 @@
 import sys
 import getopt
 import serial
+import pyglet
 
+pyglet.lib.load_library('avbin')
+pyglet.have_avbin=True
+
+def play_ticker():
+    song = pyglet.media.load('sounds/ticker.ogg')
+    song.play()
+    pyglet.app.run()
 
 def pong():
     print('pong')
@@ -37,6 +45,7 @@ def main(argv):
             assert False, "unhandled option"
     call = {
             'ping': pong,
+            'tick': play_ticker,
             }
     print('Listening', path, 'at', baudrate, 'Bd.')
     ser = serial.Serial(path, baudrate)
