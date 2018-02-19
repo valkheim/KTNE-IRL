@@ -15,7 +15,8 @@ We are using Atmega328* micro controllers as you can found on most Arduino board
 ### Installing
 
 In order to run a minimal setup, you'll need to build and run at least one master module and one slave module.
-You will find those two under [examples](examples/).
+You will find those two under [templates](templates/).
+Slaves are built upon the [ktne core library](ktne_core/). You should install it and link it to your slave(s).
 
 ## Protocol
 

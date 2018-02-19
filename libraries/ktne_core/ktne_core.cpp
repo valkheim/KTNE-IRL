@@ -80,7 +80,7 @@ static void i2c_receive_request()
   }
 }
 
-// Read module address from its reserved addresses pins
+/* Read module address from its reserved addresses pins */
 static uint8_t getI2CAddr()
 {
   uint8_t addr = 0;

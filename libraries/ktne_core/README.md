@@ -19,4 +19,4 @@ This library implements all the mandatory features for a module :
 
 ## Installation
 
-RTFM : [https://www.arduino.cc/en/Guide/Libraries](https://www.arduino.cc/en/Guide/Libraries)
+Create a zip file of the library and [rtfm](https://www.arduino.cc/en/Guide/Libraries).
