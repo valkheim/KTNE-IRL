@@ -39,6 +39,6 @@ extern uint16_t penality;
 
 void setupCore();
 void defuseModule();
-void userMadeMistake(uint16_t penality);
+void applyPenality(uint16_t penality);
 
 #endif
