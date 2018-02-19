@@ -13,44 +13,52 @@
 
 # define PIN_LATCH (6)
 # define PIN_CLOCK (12)
-# define PIN_DATA (13)
+# define PIN_DATA  (13)
 
 // Value for needPrintSeq
-# define TRUE 1
-# define FALSE 0
-# define WAIT_USER_SEQ 2
+# define FALSE         (0)
+# define TRUE          (1)
+# define WAIT_USER_SEQ (2)
 
 int needPrintSeq = FALSE;
 
 // Led index
-# define LED_OFF (0)
-# define LED_GREEN (1)
+/*
+** Warning : If you change the following define take a look to the loop function.
+** ---> for (int color = LED_GREEN; color <= LED_RED; color++)
+*/
+# define LED_OFF    (0)
+# define LED_GREEN  (1)
 # define LED_YELLOW (2)
-# define LED_BLUE (3)
-# define LED_RED (4)
+# define LED_BLUE   (3)
+# define LED_RED    (4)
 
 // Sequences' size
-# define SEQ_EASY_SIZE (4)
+# define SEQ_EASY_SIZE   (4)
 # define SEQ_MEDIUM_SIZE (8)
-# define SEQ_HARD_SIZE (12)
-# define SEQ_USER_SIZE (12)
+# define SEQ_HARD_SIZE   (12)
+# define SEQ_USER_SIZE   (12)
 
 // Pin use to start printing the leds sequence
 # define PIN_BUTTON_SEQ (2)
 
-int seq_easy[SEQ_EASY_SIZE] = {LED_GREEN, LED_GREEN, LED_BLUE, LED_RED};
+/*
+** Warning : If you change the following define remember that seq_user MUST 
+** have at least the same size as the biggest difficulty sequence.
+*/
+int seq_easy[SEQ_EASY_SIZE]     = {LED_GREEN, LED_GREEN, LED_BLUE, LED_RED};
 int seq_medium[SEQ_MEDIUM_SIZE] = {LED_BLUE, LED_GREEN, LED_BLUE, LED_RED, LED_YELLOW, LED_BLUE, LED_GREEN, LED_YELLOW};
-int seq_hard[SEQ_HARD_SIZE] = {LED_BLUE, LED_GREEN, LED_YELLOW, LED_YELLOW, LED_BLUE, LED_BLUE, LED_RED, LED_GREEN, LED_GREEN, LED_YELLOW, LED_BLUE, LED_RED};
+int seq_hard[SEQ_HARD_SIZE]     = {LED_BLUE, LED_GREEN, LED_YELLOW, LED_YELLOW, LED_BLUE, LED_BLUE, LED_RED, LED_GREEN, LED_GREEN, LED_YELLOW, LED_BLUE, LED_RED};
 
-int seq_user[SEQ_USER_SIZE] = {LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF};
+int seq_user[SEQ_USER_SIZE]     = {LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF};
 
 // Pin of simon buttons
 # define PIN_BUTTONS (2)
 
 // Value buttons
-# define STATE_LOW 0
-# define STATE_HIGH 1
-# define STATE_STILL_HIGH 2
+# define STATE_LOW        (0)
+# define STATE_HIGH       (1)
+# define STATE_STILL_HIGH (2)
 
 int buttons[4] = {STATE_LOW, STATE_LOW, STATE_LOW, STATE_LOW};
 
@@ -117,34 +125,17 @@ void printSequence()
 
 void printColor(int myDataPin, int myClockPin, byte color)
 {
-  // The i-th element of this table corresponds to the i-th led (LED_OFF, LED_GREEN, LED_YELLOW, LED_BLUE, LED_RED)
+  /*
+  ** This table is used to light on/off the leds using the card 74HC595.
+  ** The i-th element of this table corresponds to the i-th led (LED_OFF, LED_GREEN, LED_YELLOW, LED_BLUE, LED_RED)
+  ** The elements are encoded in binary format, for example 0x00000010 allows to turn on the second led and turn off the others. In our case it is linked with the green led.
+  */
   uint8_t tab[5] = {0, 2, 4, 8, 16};
 
   digitalWrite(PIN_LATCH, 0);
   shiftOut(myDataPin, myClockPin, tab[color]);
   shiftOut(myDataPin, myClockPin, tab[color]);
   digitalWrite(PIN_LATCH, 1);
-}
-
-void shiftOut(int myDataPin, int myClockPin, byte myDataOut)
-{
-  int i=0;
-  int pinState;
-
-  digitalWrite(myDataPin, 0);
-  digitalWrite(myClockPin, 0);
-  for (i=7; i>=0; i--)
-  {
-    digitalWrite(myClockPin, 0);
-    if ( myDataOut & (1<<i) )
-      pinState= 1;
-    else
-      pinState= 0;
-    digitalWrite(myDataPin, pinState);
-    digitalWrite(myClockPin, 1);
-    digitalWrite(myDataPin, 0);
-  }
-  digitalWrite(myClockPin, 0);
 }
 
 int computeUpdateButton(int old_value, int curr_value)
@@ -158,7 +149,7 @@ int computeUpdateButton(int old_value, int curr_value)
   return STATE_LOW;
 }
 
-void computeButtonsActivation(int analogValue, int readValue[4])
+void computeButtonsActivation(int analogValue, int readValue[5])
 {
   if (analogValue >= 300 && analogValue < 400)
     readValue[0] += 1;
@@ -193,11 +184,8 @@ void updateButtons()
   }
   for (int i = 0; i < 5; i++)
     readValue[i] = (max_index == i);
-
-  buttons[0] = computeUpdateButton(buttons[0], readValue[0]);
-  buttons[1] = computeUpdateButton(buttons[1], readValue[1]);
-  buttons[2] = computeUpdateButton(buttons[2], readValue[2]);
-  buttons[3] = computeUpdateButton(buttons[3], readValue[3]);
+  for (int i = 0; i < 4; i++)
+    buttons[i] = computeUpdateButton(buttons[i], readValue[i]);
 }
 
 void pushInUserSequence(int color)
