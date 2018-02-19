@@ -117,7 +117,7 @@ void defuseModule()
   digitalWrite(LED_GREEN, HIGH);
 }
 
-void userMadeMistake(uint16_t error)
+void applyPenality(uint16_t error)
 {
   digitalWrite(SENSE_PIN, HIGH);
   penality += error;

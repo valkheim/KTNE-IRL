@@ -241,7 +241,7 @@ int chechUserSeq()
     return WAIT_USER_SEQ;
   clearUserSequence();
   clearButtons();
-  userMadeMistake(10);
+  applyPenality(10);
   return TRUE;
 }
 

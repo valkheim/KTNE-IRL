@@ -259,27 +259,22 @@ void increaseDiff()
     difficulty = EASY;
 }
 
+void updateDifficultyLed(bool easy, bool medium, bool hard)
+{
+  digitalWrite(PIN_EASY,   easy);
+  digitalWrite(PIN_MEDIUM, medium);
+  digitalWrite(PIN_HARD,   hard);
+}
+
 void updateDifficulty()
 {
   increaseDiff();
   if (difficulty == EASY)
-  {
-    digitalWrite(PIN_EASY, HIGH);
-    digitalWrite(PIN_MEDIUM, LOW);
-    digitalWrite(PIN_HARD, LOW);
-  }
+    updateDifficultyLed(HIGH, LOW, LOW);
   else if (difficulty == MEDIUM)
-  {
-    digitalWrite(PIN_EASY, LOW);
-    digitalWrite(PIN_MEDIUM, HIGH);
-    digitalWrite(PIN_HARD, LOW);
-  }
+    updateDifficultyLed(LOW, HIGH, LOW);
   else
-  {
-    digitalWrite(PIN_EASY, LOW);
-    digitalWrite(PIN_MEDIUM, LOW);
-    digitalWrite(PIN_HARD, HIGH);
-  }
+    updateDifficultyLed(LOW, LOW, HIGH);
   needDifficultyUpdate = true;
 }
 
@@ -335,7 +330,10 @@ void HandlePlay()
 
 void HandleBombeExplosion()
 {
-  // Handle bombe explosion
+  /*
+  ** TODO : Handle bombe explosion
+  ** Send message on USB cable to notify the computer and produce some sound.
+  */
 }
 
 void loop()
