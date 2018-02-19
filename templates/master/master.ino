@@ -284,8 +284,8 @@ void printNumber(int myDataPin, int myClockPin, int myLatchPin, byte number)
   uint8_t tab[10] = {119, 20, 179, 182, 212, 230, 231, 52, 247, 246};
 
   digitalWrite(myLatchPin, 0);
-  shiftOut(myDataPin, myClockPin, tab[number % 10]);
-  shiftOut(myDataPin, myClockPin, tab[number / 10]);
+  shiftOut(myDataPin, myClockPin, MSBFIRST, tab[number % 10]);
+  shiftOut(myDataPin, myClockPin, MSBFIRST, tab[number / 10]);
   digitalWrite(myLatchPin, 1);
 }
 

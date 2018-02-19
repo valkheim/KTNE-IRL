@@ -133,8 +133,8 @@ void printColor(int myDataPin, int myClockPin, byte color)
   uint8_t tab[5] = {0, 2, 4, 8, 16};
 
   digitalWrite(PIN_LATCH, 0);
-  shiftOut(myDataPin, myClockPin, tab[color]);
-  shiftOut(myDataPin, myClockPin, tab[color]);
+  shiftOut(myDataPin, myClockPin, MSBFIRST, tab[color]);
+  shiftOut(myDataPin, myClockPin, MSBFIRST, tab[color]);
   digitalWrite(PIN_LATCH, 1);
 }
 
