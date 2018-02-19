@@ -1,9 +1,16 @@
 #include <Wire.h>
 
-// Output : Module
-# define PIN_RED_LED (10)
-# define PIN_GREEN_LED (11)
-# define PIN_YELLOW_LED (12)
+// Output : 7 segments
+# define MINUTE_LATCH (12)
+# define MINUTE_CLOCK (11)
+# define MINUTE_DATA (3)
+
+# define SEC_LATCH (4)
+# define SEC_CLOCK (9)
+# define SEC_DATA (13)
+
+// Output : Status
+# define PIN_NOT_DEFUSED (10)
 
 // Output : Difficulty
 # define PIN_EASY (5)
@@ -40,7 +47,8 @@ bool addresses[127] = {false};
 uint16_t timeleft = 300;    // 5 minutes
 uint16_t difficulty = HARD;
 
-bool defused = false;       // Is the bomb defused ?
+bool defused = false;             // Is the bomb defused ?
+bool needDifficultyUpdate = true;
 
 // Message's structure
 struct BusMessage
@@ -217,10 +225,13 @@ void pingEveryone()
     if (addresses[i] == true)
     {
       requestTime(i);
+      if (needDifficultyUpdate == true)
+        requestDifficulty(i);
       if (someoneNeedToSpeak() == true)
         handleNeedToSpeakCommand(i, requestNeedToSpeak(i));
     }
   }
+  needDifficultyUpdate = false;
 }
 
 bool areAllDefused()
@@ -236,15 +247,9 @@ bool areAllDefused()
 void updateModuleStatus()
 {
   if (defused == false)
-  {
-    digitalWrite(PIN_RED_LED, HIGH);
-    digitalWrite(PIN_GREEN_LED, LOW);
-  }
+    digitalWrite(PIN_NOT_DEFUSED, HIGH);
   else
-  {
-    digitalWrite(PIN_RED_LED, LOW);
-    digitalWrite(PIN_GREEN_LED, HIGH);
-  }
+    digitalWrite(PIN_NOT_DEFUSED, LOW);
 }
 
 void increaseDiff()
@@ -254,27 +259,40 @@ void increaseDiff()
     difficulty = EASY;
 }
 
+void updateDifficultyLed(bool easy, bool medium, bool hard)
+{
+  digitalWrite(PIN_EASY,   easy);
+  digitalWrite(PIN_MEDIUM, medium);
+  digitalWrite(PIN_HARD,   hard);
+}
+
 void updateDifficulty()
 {
   increaseDiff();
   if (difficulty == EASY)
-  {
-    digitalWrite(PIN_EASY, HIGH);
-    digitalWrite(PIN_MEDIUM, LOW);
-    digitalWrite(PIN_HARD, LOW);
-  }
+    updateDifficultyLed(HIGH, LOW, LOW);
   else if (difficulty == MEDIUM)
-  {
-    digitalWrite(PIN_EASY, LOW);
-    digitalWrite(PIN_MEDIUM, HIGH);
-    digitalWrite(PIN_HARD, LOW);
-  }
+    updateDifficultyLed(LOW, HIGH, LOW);
   else
-  {
-    digitalWrite(PIN_EASY, LOW);
-    digitalWrite(PIN_MEDIUM, LOW);
-    digitalWrite(PIN_HARD, HIGH);
-  }
+    updateDifficultyLed(LOW, LOW, HIGH);
+  needDifficultyUpdate = true;
+}
+
+void printNumber(int myDataPin, int myClockPin, int myLatchPin, byte number)
+{
+  // The i-th element of this table correspond to a binary map used to display the number i on a 7 segments
+  uint8_t tab[10] = {119, 20, 179, 182, 212, 230, 231, 52, 247, 246};
+
+  digitalWrite(myLatchPin, 0);
+  shiftOut(myDataPin, myClockPin, MSBFIRST, tab[number % 10]);
+  shiftOut(myDataPin, myClockPin, MSBFIRST, tab[number / 10]);
+  digitalWrite(myLatchPin, 1);
+}
+
+void printTime()
+{
+  printNumber(MINUTE_DATA, MINUTE_CLOCK, MINUTE_LATCH, timeleft / 60);
+  printNumber(SEC_DATA, SEC_CLOCK, SEC_LATCH, timeleft % 60);
 }
 
 void HandlePlay()
@@ -283,6 +301,7 @@ void HandlePlay()
   {
     pingEveryone();
     decreaseTimeLeft(1);
+    printTime();
     defused = areAllDefused();
   }
   updateModuleStatus();
@@ -290,7 +309,10 @@ void HandlePlay()
 
 void HandleBombeExplosion()
 {
-  digitalWrite(PIN_YELLOW_LED, HIGH);
+  /*
+  ** TODO : Handle bombe explosion
+  ** Send message on USB cable to notify the computer and produce some sound.
+  */
 }
 
 void loop()
@@ -304,18 +326,25 @@ void loop()
 
 void setup()
 {
-  updateDifficulty();
-  attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_DIFF), updateDifficulty, RISING);
+  pinMode(MINUTE_LATCH, OUTPUT);
+  pinMode(MINUTE_CLOCK, OUTPUT);
+  pinMode(MINUTE_DATA, OUTPUT);
+  pinMode(SEC_LATCH, OUTPUT);
+  pinMode(SEC_CLOCK, OUTPUT);
+  pinMode(SEC_DATA, OUTPUT);
   pinMode(PIN_EASY , OUTPUT);
   pinMode(PIN_MEDIUM, OUTPUT);
   pinMode(PIN_HARD, OUTPUT);
   pinMode(PIN_SENSE, INPUT);
   pinMode(PIN_BUTTON_DIFF, INPUT);
-  pinMode(PIN_RED_LED, OUTPUT);
-  pinMode(PIN_GREEN_LED, OUTPUT);
-  pinMode(PIN_YELLOW_LED, OUTPUT);
+  pinMode(PIN_NOT_DEFUSED, OUTPUT);
+  digitalWrite(PIN_NOT_DEFUSED, HIGH);
+  printTime();
+  updateDifficulty();
+  attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_DIFF), updateDifficulty, RISING);
   Wire.begin();
   Serial.begin(9600);
   while (!Serial);
+  delay(1000);
   scan();
 }

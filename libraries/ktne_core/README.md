@@ -15,6 +15,7 @@ This library implements all the mandatory features for a module :
 * `bool needToSpeak();` : check wether the module need to contact the master or not
 * `void i2c_receive_request();` : I2C callback to parse command and respond
 * `void defuseModule();` : function to defuse the module. This is the only one to be used 'publically'
+* `void applyPenality(uint16_t penality);` : funtion to notify that user made a mistake
 
 ## Installation
 

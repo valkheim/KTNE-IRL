@@ -8,8 +8,8 @@
 # endif
 
 /* Output */
-# define LED_RED (2)
-# define LED_GREEN (3)
+# define LED_RED (4)
+# define LED_GREEN (5)
 # define SENSE_PIN (7)
 
 /* Command */
@@ -35,8 +35,10 @@
 
 extern uint16_t difficulty;
 extern uint16_t timeleft;
+extern uint16_t penality;
 
 void setupCore();
 void defuseModule();
+void applyPenality(uint16_t penality);
 
 #endif
