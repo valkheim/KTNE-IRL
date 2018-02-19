@@ -1,5 +1,5 @@
-#ifndef _74HC595_H_
-# define _74HC595_H_
+#ifndef SHARED_H_
+# define SHARED_H_
 
 void shiftOut(int myDataPin, int myClockPin, byte myDataOut);
 
