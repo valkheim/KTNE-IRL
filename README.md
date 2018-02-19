@@ -10,13 +10,16 @@ The game is modular. Slaves, organised as modules, treat with a master module ac
 
 ### Prerequisites
 
-We are using Atmega328* micro controllers as you can found on most Arduino boards. You can use their IDE. You will also need the [Wire](https://www.arduino.cc/en/Reference/Wire) library.
+We are using Atmega328* micro controllers as you can found on most Arduino boards. You can use their IDE. You will also need the following libraries :
+
+- [Wire](https://www.arduino.cc/en/Reference/Wire) library to deal with I2C communications.
+- [ktne core library](/libraries/ktne_core/) : slaves are built upon it. You should install it and link it to your slave(s).
+- [ktne shared library](/libraries/ktne_shared/) : shared tools between modules.
 
 ### Installing
 
 In order to run a minimal setup, you'll need to build and run at least one master module and one slave module.
 You will find those two under [templates](templates/).
-Slaves are built upon the [ktne core library](ktne_core/). You should install it and link it to your slave(s).
 
 ## Protocol
 
