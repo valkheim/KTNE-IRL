@@ -1,4 +1,4 @@
-# KTNE module core library
+# KTNE module shared library
 
 This library implements all the features shared between the master and the slaves :
 * use of the card 74HC595
