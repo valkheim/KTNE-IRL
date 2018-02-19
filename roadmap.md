@@ -3,9 +3,9 @@
 ## Planification de la V1
 
 ### 18 février
-- [ ] forme du boitier
-- [ ] forme des modules
-- [ ] connectique
+- [X] forme du boitier
+- [X] forme des modules
+- [X] connectique
 
 ### 4 mars
 4 nouveaux modules (conception / acquisition du matériel / réalisation / manuel)
