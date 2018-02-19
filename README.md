@@ -14,7 +14,6 @@ We are using Atmega328* micro controllers as you can found on most Arduino board
 
 - [Wire](https://www.arduino.cc/en/Reference/Wire) library to deal with I2C communications.
 - [ktne core library](/libraries/ktne_core/) : slaves are built upon it. You should install it and link it to your slave(s).
-- [ktne shared library](/libraries/ktne_shared/) : shared tools between modules.
 
 ### Installing
 
