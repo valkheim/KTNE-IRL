@@ -20,20 +20,13 @@ void loop()
 
 void checkUserInput()
 {
-  if (difficulty == EASY && timeleft % 2 == 0)
-  {
+  if (
+    difficulty == EASY && timeleft % 2 == 0 ||
+    difficulty == MEDIUM && timeleft % 3 == 0 ||
+    difficulty == HARD && timeleft % 7 == 0
+  ) {
     defuseModule();
-    return;
-  }
-  if (difficulty == MEDIUM && timeleft % 3 == 0)
-  {
-    defuseModule();
-    return;
-  }
-  if (difficulty == HARD && timeleft % 7 == 0)
-  {
-    defuseModule();
-    return;
+    return ;
   }
   applyPenality(20);
 }
