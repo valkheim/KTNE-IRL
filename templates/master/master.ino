@@ -299,9 +299,9 @@ void HandlePlay()
 {
   if (defused == false)
   {
-    pingEveryone();
     decreaseTimeLeft(1);
     printTime();
+    pingEveryone();
     defused = areAllDefused();
   }
   updateModuleStatus();

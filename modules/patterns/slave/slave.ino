@@ -27,6 +27,7 @@
 #define PIN_DIFFICULTY (2) /* interrupt to sync this module difficulty */
 #define PIN_PENALITY (6)
 #define PIN_DEFUSAL (7)
+
 #define PIN_BTN_LEFT (1)
 #define PIN_BTN_MIDDLE (3)
 #define PIN_BTN_RIGHT (5)
@@ -36,7 +37,7 @@
 #define IMG_MARGIN (4)
 
 static uint16_t slave_difficulty = difficulty;
-//static uint8_t btns[PATTERNS] = { PIN_BTN_LEFT, PIN_BTN_MIDDLE, PIN_BTN_RIGHT };
+static uint8_t btns[PATTERNS] = { PIN_BTN_LEFT, PIN_BTN_MIDDLE, PIN_BTN_RIGHT };
 
 typedef struct
 {
@@ -45,13 +46,13 @@ typedef struct
 } t_pattern;
 
 static t_pattern const patterns[MAX_DIFFICULTY] = {
-  {{ 0, 1, 0 }, 2},
-  {{ 0, 1, 1 }, 1},
-  {{ 1, 1, 0 }, 2}
+  {{ 1, 0, 0 }, 2},
+  {{ 1, 1, 0 }, 1},
+  {{ 1, 1, 1 }, 2}
 };
 
-static char const * const filenames[] = { "sample.bmp", "logo.bmp" };
-static PImage images[PATTERNS] = {};
+static char const * const filenames[] = { "cat.bmp", "logo.bmp", "sample.bmp", "jeremy.bmp", "hexagon.bmp", "vim.bmp", "w2d.bmp", "resitor.bmp", "epitech.bmp" };
+static PImage images[] = { {}, {}, {}, {}, {}, {}, {}, {}, {} };
 
 #define sd_cs 4
 #define lcd_cs 10
@@ -63,8 +64,8 @@ TFT TFTscreen = TFT(lcd_cs, dc, rst);
 
 void loadImages(void)
 {
-  for (size_t i = 0 ; i < MAX_DIFFICULTY ; ++i)
-    images[i] = TFTscreen.loadImage(filenames[patterns[slave_difficulty - 1].id[i]]);
+  for (size_t i = 0 ; i < sizeof(images) / sizeof(images[0]) ; ++i)
+    images[i] = TFTscreen.loadImage(filenames[i]);
 }
 
 void handleDifficulty(void)
@@ -73,7 +74,6 @@ void handleDifficulty(void)
     slave_difficulty = EASY;
   Serial.print("handle diff, new diff=");
   Serial.println(slave_difficulty);
-  loadImages();
   printImages();
 }
 
@@ -85,7 +85,7 @@ void printImages(void)
   Serial.println(slave_difficulty);
   for (size_t i = 0 ; i < PATTERNS ; ++i)
   {
-    TFTscreen.image(images[i], (int)(IMG_MARGIN + (IMG_DIMENSIONS + IMG_MARGIN)) * i, y);
+    TFTscreen.image(images[patterns[slave_difficulty - 1].id[i]], IMG_MARGIN + (IMG_DIMENSIONS + IMG_MARGIN) * i, y);
     Serial.println(IMG_MARGIN + (IMG_DIMENSIONS + IMG_MARGIN) * i);
     Serial.println(y);
   }
@@ -93,6 +93,7 @@ void printImages(void)
 
 void setup()
 {
+  delay(2000);
   Serial.begin(9600);
   if (!SD.begin(sd_cs))
   {
@@ -110,11 +111,24 @@ void setup()
   Serial.println("Setup ok");
 }
 
+void sendSignal(int pin)
+{
+  digitalWrite(pin, HIGH);
+  delay(100);
+  digitalWrite(pin, LOW);
+}
+
 void loop()
 {
-  // clear screen
-  // wait a little bit before drawing again
-  Serial.println("loop");
-  delay(1500);
-  //printImages();
+  for (size_t i = 0 ; i < sizeof(btns) / sizeof(btns[0]) ; ++i)
+  {
+    if (digitalRead(btns[i]) == HIGH)
+    {
+      if (patterns[slave_difficulty - 1].solution == btns[i])
+        sendSignal(PIN_DEFUSAL);
+      else
+        sendSignal(PIN_PENALITY);
+    }
+  }
+  delay(100);
 }

@@ -2,7 +2,7 @@
 #include "ktne_core.h"
 
 /* Init default values */
-uint16_t difficulty = 1;
+uint16_t difficulty = EASY;
 uint16_t timeleft = 0xFFFF;
 static int as[] = {8, 9, 10, 11};
 static bool masterNeedsDefusingInformation = false;
