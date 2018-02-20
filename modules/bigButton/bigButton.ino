@@ -3,8 +3,8 @@
  *
  * Théophile Champion
  *
- * This is the simon slave.
- * User have to repeat the correct sequence to defuse
+ * This is the bigButton slave.
+ * User have to repeat press the button at the good time to defuse
  * the module (by calling defuseModule()
  * from ktne_core).
 ****************************************/
