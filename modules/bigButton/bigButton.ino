@@ -1,5 +1,5 @@
 /****************************************
- * Simon slave
+ * bigButton slave
  *
  * Théophile Champion
  *
@@ -15,7 +15,7 @@
 
 void loop()
 {
-  //delay(100);
+  delay(100);
 }
 
 void checkUserInput()
@@ -44,4 +44,3 @@ void setup()
   pinMode(PIN_BUTTON, INPUT);
   attachInterrupt(digitalPinToInterrupt(PIN_BUTTON), checkUserInput, RISING);
 }
-
