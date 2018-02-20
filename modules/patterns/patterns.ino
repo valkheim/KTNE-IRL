@@ -61,9 +61,10 @@ void loop()
   int const x = random(TFTscreen.width() - img.width());
   int const y = random(TFTscreen.height() - img.height());
   // clear screen
-  TFTscreen.background(255, 255, 255);
+  TFTscreen.background(0, 0, 0);
   // draw the image to the screen
-  TFTscreen.image(img, x, y);
+  TFTscreen.image(img, 0, 0);
+  TFTscreen.image(img, TFTscreen.width() - img.width(), TFTscreen.height() - img.height());
   // wait a little bit before drawing again
   delay(1500);
 }
