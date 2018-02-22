@@ -35,7 +35,6 @@
 
 extern uint16_t difficulty;
 extern uint16_t timeleft;
-extern uint16_t penality;
 
 void setupCore();
 void defuseModule();

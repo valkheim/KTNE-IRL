@@ -124,6 +124,13 @@ void sendSignal(int pin)
   digitalWrite(pin, LOW);
 }
 
+void sendSignal(int pin)
+{
+  digitalWrite(pin, HIGH);
+  delay(100);
+  digitalWrite(pin, LOW);
+}
+
 void loop()
 {
   updateDifficulty();
