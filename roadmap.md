@@ -9,10 +9,10 @@
 
 ### 4 mars
 4 nouveaux modules (conception / acquisition du matériel / réalisation / manuel)
-- [ ] module 1
-- [ ] module 2
-- [ ] module 3
-- [ ] module 4
+- [ ] switchMania
+- [ ] simon
+- [ ] bigButton
+- [ ] patterns
 
 
 ### 11 mars
