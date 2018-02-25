@@ -25,7 +25,7 @@ uint8_t patterns[MAX_DIFFICULTY][NUMBER_OF_BUTTONS] = {{FIRST_BUTTON, SECOND_BUT
 
 uint8_t user_pattern[NUMBER_OF_BUTTONS] = {NONE, NONE, NONE, NONE};
 
-bool needToVerify = true;
+bool isDefused = true;
 
 void setup()
 {
@@ -83,11 +83,11 @@ bool  buttonAlreadyPressed(uint8_t b)
 
 void loop()
 {
-  if (needToVerify && patternIsFull())
+  if (isDefused && patternIsFull())
   {
     if (comparePattern())
     {
-      needToVerify = false;
+      isDefused = false;
       defuseModule();
     }
     else
