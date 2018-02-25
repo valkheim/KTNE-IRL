@@ -1,7 +1,7 @@
 /****************************************
  * The order of buttons
  *
- * Léo Paolo
+ * Léo Paol
  * Nicolas-Emmanuel Robert
  *
  * Activate the buttons in
