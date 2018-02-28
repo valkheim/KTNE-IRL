@@ -49,6 +49,10 @@ int needPrintSeq = FALSE;
 int seq_easy[SEQ_EASY_SIZE]     = {LED_GREEN, LED_GREEN, LED_BLUE, LED_RED};
 int seq_medium[SEQ_MEDIUM_SIZE] = {LED_BLUE, LED_GREEN, LED_BLUE, LED_RED, LED_YELLOW, LED_BLUE, LED_GREEN, LED_YELLOW};
 int seq_hard[SEQ_HARD_SIZE]     = {LED_BLUE, LED_GREEN, LED_YELLOW, LED_YELLOW, LED_BLUE, LED_BLUE, LED_RED, LED_GREEN, LED_GREEN, LED_YELLOW, LED_BLUE, LED_RED};
+      
+int answer_seq_easy[SEQ_EASY_SIZE]     = {LED_GREEN, LED_GREEN, LED_YELLOW, LED_GREEN};
+int answer_seq_medium[SEQ_MEDIUM_SIZE] = {LED_YELLOW, LED_RED, LED_YELLOW, LED_GREEN, LED_YELLOW, LED_YELLOW, LED_RED, LED_YELLOW};
+int answer_seq_hard[SEQ_HARD_SIZE]     = {LED_RED, LED_RED, LED_GREEN, LED_GREEN, LED_RED, LED_RED, LED_BLUE, LED_RED, LED_RED, LED_GREEN, LED_RED, LED_BLUE};
 
 int seq_user[SEQ_USER_SIZE]     = {LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF};
 
@@ -100,6 +104,16 @@ int *getSequenceRequired()
     return seq_medium;
   else
     return seq_hard;
+}
+
+int *getAnswerSequenceRequired()
+{
+  if (difficulty == EASY)
+    return answer_seq_easy;
+  else if (difficulty == MEDIUM)
+    return answer_seq_medium;
+  else
+    return answer_seq_hard;
 }
 
 int getSizeOfSequenceRequired()
@@ -219,7 +233,7 @@ int chechUserSeq()
 {
   int index;
 
-  index = indexSequencesDiff(seq_user, getSequenceRequired(), getSizeOfSequenceRequired());
+  index = indexSequencesDiff(seq_user, getAnswerSequenceRequired(), getSizeOfSequenceRequired());
   if (index == getSizeOfSequenceRequired()) // Module defused
   {
     defuseModule();

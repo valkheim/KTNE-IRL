@@ -1,3 +1,27 @@
-\subsection{Simon says \dots heu non juste simon}
-\lipsum[3]
+\subsection{À propos du Simon}
+\begin{modulebox}{Simon}
+  \textit{C'est le genre de jeu auquel vous jouiez enfant où il faut répéter la séquence jouée, sauf que celui-là semble être une copie probablement achetée aux puces.}
+  \modulesection{Description :}
+  Afin de désamorcer le module vous devrez appuyer sur le bouton qui lance l'affichage de la séquence, mémoriser la séquence, la décoder avec la table de décodage et la rejouer avec les boutons associés aux leds. Le niveau de difficulté de la bombe est visible sur le module contenant l'horloge, pour plus d'informations à ce sujet veuillez vous référer à la partie nommée \textit{Modules}.\dots
+  \newline
+  \begin{moduleaction}[Table de décodage]
+    \\\hline
+    \begin{dndtable}
+      \textbf{Difficulté} &  \\
+      facile    & Rouge $\rightarrow$ Vert, Bleu $\rightarrow$ Jaune \\
+      moyen     & Rouge $\rightarrow$ Vert, Vert $\rightarrow$ Rouge, Bleu $\rightarrow$ Jaune \\
+      difficile & R $\rightarrow$ B, V $\rightarrow$ R, B $\rightarrow$ R, J $\rightarrow$ V \\
+    \end{dndtable}
+  \end{moduleaction}
+  \hline%
+  \modulesection{Composants :}
+  \begin{moduleaction}[Leds]
+    1 led verte, 1 led rouge, 1 led bleu et 1 led jaune.
+  \end{moduleaction}
+  \begin{moduleaction}[Bouton]
+    1 bouton pour lancer l'affichage de la séquence et 4 boutons pour entrer la séquence une fois décodée.
+  \end{moduleaction}
+\end{modulebox}
+\vspace{.5cm}
+
 \newpage
