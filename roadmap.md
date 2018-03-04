@@ -10,8 +10,8 @@
 ### 4 mars
 4 nouveaux modules (conception / acquisition du matériel / réalisation / manuel)
 - [X] switchMania
-- [ ] simon
-- [ ] bigButton
+- [X] simon
+- [X] bigButton
 - [ ] patterns
 
 
