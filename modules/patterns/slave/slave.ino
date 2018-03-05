@@ -5,19 +5,18 @@
  *
  * Slave part of the module that controls the
  * SD/TFT and implements game mechanics.
- * 
+ *
  * Require SD and TFT library.
  * Wiring guide:
  * https://www.arduino.cc/en/Guide/TFTtoBoards
  * TFT guide:
  * https://www.arduino.cc/en/Tutorial/TFTBitmapLogo
- * 
+ *
  * Use windows 3.x bmp formats. Convert with
  * $> convert file.bmp -format bmp3 file.bmp
- * 
+ *
  * SD card must be FAT16 or FAT32 formatted
  ***************************************/
-
 
 #include <SPI.h>
 #include <SD.h>
@@ -38,11 +37,13 @@
 
 static uint16_t slave_difficulty = difficulty;
 
-static uint8_t const btns[] = { PIN_BTN_LEFT, PIN_BTN_MIDDLE, PIN_BTN_RIGHT };
+static uint8_t const buttons[] = { PIN_BTN_LEFT, PIN_BTN_MIDDLE, PIN_BTN_RIGHT };
+/* Other images can be found in the module's img/ subdirectory */
 static char const * const filenames[] = { "cat.bmp", "logo.bmp", "vim.bmp" };
 static PImage images[] = { {}, {}, {} };
 
 #define NB_IMGS (sizeof(images) / sizeof(images[0]))
+#define NB_BTNS (sizeof(buttons) / sizeof(buttons[0]))
 
 typedef struct
 {
@@ -67,15 +68,13 @@ TFT TFTscreen = TFT(lcd_cs, dc, rst);
 void loadImages(void)
 {
   for (size_t i = 0 ; i < NB_IMGS ; ++i)
-  {
     images[i] = TFTscreen.loadImage(filenames[(slave_difficulty - 1) * NB_IMGS + i]);
-  }
 }
 
 void updateDifficulty(void)
 {
-  int value_0 = analogRead(PIN_DIFFICULTY_0);
-  int value_1 = analogRead(PIN_DIFFICULTY_1);
+  int const value_0 = analogRead(PIN_DIFFICULTY_0);
+  int const value_1 = analogRead(PIN_DIFFICULTY_1);
 
   if (value_0 < 100 && value_1 < 100 && slave_difficulty != EASY)
   {
@@ -96,13 +95,15 @@ void updateDifficulty(void)
 
 void printImages(void)
 {
-  uint8_t y = TFTscreen.height() / 2 - IMG_DIMENSIONS / 2;
- 
+  static uint8_t const y = TFTscreen.height() / 2 - IMG_DIMENSIONS / 2;
+
   for (size_t i = 0 ; i < NB_IMGS ; ++i)
-    TFTscreen.image(images[patterns[slave_difficulty - 1].id[i]], IMG_MARGIN + (IMG_DIMENSIONS + IMG_MARGIN) * i, y);
+    TFTscreen.image(images[patterns[slave_difficulty - 1].id[i]],
+    IMG_MARGIN + (IMG_DIMENSIONS + IMG_MARGIN) * i,
+    y);
 }
 
-void setup()
+void setup(void)
 {
   if (!SD.begin(sd_cs))
     return;
@@ -116,21 +117,21 @@ void setup()
   printImages();
 }
 
-void sendSignal(int pin)
+void sendSignal(uint8_t const pin)
 {
   digitalWrite(pin, HIGH);
   delay(100);
   digitalWrite(pin, LOW);
 }
 
-void loop()
+void loop(void)
 {
   updateDifficulty();
-  for (size_t i = 0 ; i < sizeof(btns) / sizeof(btns[0]) ; ++i)
+  for (size_t i = 0 ; i < NB_BTNS ; ++i)
   {
-    if (digitalRead(btns[i]) == HIGH)
+    if (digitalRead(buttons[i]) == HIGH)
     {
-      if (patterns[slave_difficulty - 1].solution == btns[i])
+      if (patterns[slave_difficulty - 1].solution == buttons[i])
         sendSignal(PIN_DEFUSAL);
       else
         sendSignal(PIN_PENALITY);
