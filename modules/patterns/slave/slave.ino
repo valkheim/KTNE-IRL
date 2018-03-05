@@ -1,7 +1,7 @@
 /****************************************
  * patterns/slave
  *
- * Charles Paulet
+ * Charles Paulet & Champion Théophile
  *
  * Slave part of the module that controls the
  * SD/TFT and implements game mechanics.
@@ -51,9 +51,9 @@ typedef struct
 } t_pattern;
 
 static t_pattern const patterns[MAX_DIFFICULTY] = {
-  {{ 0, 1, 2 }, PIN_BTN_LEFT},
+  {{ 0, 1, 2 }, PIN_BTN_RIGHT},
   {{ 2, 0, 1 }, PIN_BTN_MIDDLE},
-  {{ 2, 2, 0 }, PIN_BTN_RIGHT}
+  {{ 1, 1, 0 }, PIN_BTN_LEFT}
 };
 
 #define sd_cs   (4)
