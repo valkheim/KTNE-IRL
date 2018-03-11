@@ -44,10 +44,10 @@
 
 bool addresses[127] = {false};
 
-uint16_t timeleft = 300;    // 5 minutes
+uint16_t timeleft = 300; // 5 minutes
 uint16_t difficulty = HARD;
 
-bool defused = false;             // Is the bomb defused ?
+bool defused = false; // Is the bomb defused ?
 bool needDifficultyUpdate = true;
 
 // Message's structure
@@ -152,14 +152,10 @@ void scan()
     error = Wire.endTransmission();
     if (error == 0)
     {
-      printDeviceFound(address);
       n++;
       registerSlave(address);
     }
-    else if (error == 4)
-      printUnknownError(address);
   }
-  printNumberOfDeviceFound(n);
 }
 
 BusMessage receiveFrom(uint8_t addr)
@@ -309,10 +305,14 @@ void HandlePlay()
 
 void HandleBombeExplosion()
 {
-  /*
-  ** TODO : Handle bombe explosion
-  ** Send message on USB cable to notify the computer and produce some sound.
-  */
+  static int i = 0;
+
+  if (i == 0)
+  {
+    printTime();
+    Serial.println("explosion");
+  }
+  i++;
 }
 
 void loop()
@@ -344,7 +344,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_DIFF), updateDifficulty, RISING);
   Wire.begin();
   Serial.begin(9600);
-  while (!Serial);
   delay(1000);
+  Serial.println("tick");
   scan();
 }

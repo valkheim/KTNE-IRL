@@ -3,14 +3,33 @@ import sys
 import getopt
 import serial
 import pyglet
+import pygame
+import time
+import threading
 
 pyglet.lib.load_library('avbin')
 pyglet.have_avbin=True
 
+song = None
+
+def play_sound(file_name):
+    global song
+    if song is not None:
+        song.stop()
+    try:
+        song = pygame.mixer.Sound(file_name)
+        song.play()
+    except pygame.error:
+        pass
+
+
 def play_ticker():
-    song = pyglet.media.load('sounds/ticker.ogg')
-    song.play()
-    pyglet.app.run()
+    play_sound('sounds/ticker.ogg')
+
+
+def play_explosion():
+    play_sound('sounds/boom.ogg')
+
 
 def pong():
     print('pong')
@@ -21,6 +40,23 @@ def usage():
   -h --help\tprint help\n\
   -p --port\tdevice name\n\
   -b --baudrate\tbaud rate')
+
+
+def loop(ser):
+    call = {
+            'ping': pong,
+            'tick': play_ticker,
+            'explosion': play_explosion
+    }
+    pygame.init()
+    while True:
+        data = ser.readline().rstrip().decode()
+        print('Receive :', data)
+        try:
+            call[data]()
+        except KeyError:
+            pass
+    pygame.quit()
 
 
 def main(argv):
@@ -43,15 +79,9 @@ def main(argv):
             baudrate = a
         else:
             assert False, "unhandled option"
-    call = {
-            'ping': pong,
-            'tick': play_ticker,
-            }
     print('Listening', path, 'at', baudrate, 'Bd.')
     ser = serial.Serial(path, baudrate)
-    while True:
-        data = ser.readline().rstrip().decode()
-        call[data]()
+    loop(ser)
 
 
 if __name__ == '__main__':
